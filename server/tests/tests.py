@@ -1,7 +1,14 @@
 import tornado.testing
 import tornado.httputil
-import server
 import unittest
+from RedisTests import RedisTests
+import os, sys, inspect
+
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
+
+import server
 
 class EchoTests(tornado.testing.AsyncHTTPTestCase):
     def get_app(self):
@@ -49,6 +56,7 @@ def all():
     suite.addTest(EchoTests("get"))
     suite.addTest(EchoTests("post"))
     suite.addTest(IntentsTests("get_headlines"))
+    suite.addTest(RedisTests("set_and_get"))
     return suite
 
 def main():
