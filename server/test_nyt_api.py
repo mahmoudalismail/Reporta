@@ -2,7 +2,8 @@ from nytimesarticle import articleAPI
 import datetime 
 import time
 
-
+# filter out op-eds
+# figure out what is popular and not through the nytimes article API and not the most popular API
 
 api = articleAPI('ae14e1d2f3c40ad244abceddb249d691:17:65860898')
 
@@ -50,11 +51,11 @@ def get_articles(topic="",startdate="null", enddate="null"):
 	return good_articles
 
 def get_popular_articles():
-	query = pop_api.search()
+	query = pop_api.search() #CHECK THIS !!!!
 	good_articles = []
 
 	for art in query['results']:
-		if art['abstract'] != null and art['abstract'] != []:
+		if art['abstract'] != null and art['media'] != []:
 			good_articles.append(art)
 
 	return good_articles
@@ -69,8 +70,8 @@ def print_articles(articles):
 		clean['web_url'] = art['web_url']
 		clean['abstract'] = art['abstract']
 		clean['mutlimedia'] = art['mutlimedia']
-		clean['keywords'] = art['keywords']
-		clean['pub_date'] = art['snippet']
+		clean['keywords'] = art['keywords'] #change to just key words to list of just terms
+		clean['pub_date'] = art['pub_date'][:10].replace("-",'')
 		clean['type_of_material'] = art['type_of_material']
 		clean['section_name'] = art['section_name']
 		clean_articles.append(clean)
@@ -83,15 +84,25 @@ def print_pop_articles(articles):
 	clean_articles = []
 	for art in articles:
 		clean = {}
-		clean['snippet'] = art['snippet']
-		clean['web_url'] = art['web_url']
+		clean['snippet'] = art['title']
+		clean['web_url'] = art['url']
 		clean['abstract'] = art['abstract']
-		clean['mutlimedia'] = art['mutlimedia']
-		clean['keywords'] = art['keywords']
-		clean['pub_date'] = art['snippet']
+		clean['multimedia'] = art['media']
+		clean['keywords'] = []
+		if not art['des_facet']:
+			clean['keywords'].append(art['des_facet'])
+		if not art['org_facet']:
+			clean['keywords'].append(art['des_facet'])
+		if not art['per_facet']:
+			clean['keywords'].append(art['des_facet'])
+		if not art['geo_facet']:
+			clean['keywords'].append(art['des_facet'])
+		clean['pub_date'] = art['published_date'].replace("-",'')
 		clean['type_of_material'] = art['type_of_material']
-		clean['section_name'] = art['section_name']
+		clean['section_name'] = art['section']
+		
 		clean_articles.append(clean)
+
 	for clean in clean_articles:
 		for j in clean:
 			print(j)
