@@ -1,6 +1,7 @@
 import tornado.escape
 import tornado.web
 import tornado.gen
+from NYTimes import NYTimes
 
 class IntentHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
@@ -12,15 +13,9 @@ class IntentHandler(tornado.web.RequestHandler):
         elif (intent == "action"):
             self.action()
 
-    @tornado.gen.coroutine
     def get_headlines(self):
         # stub
-        client = tornado.httpclient.AsyncHTTPClient()
-        response = yield client.fetch("http://google.com")
-        self.payload = {
-            "headlines": ["john"]
-        }
-        self.finish_response()
+        NYTimes.get_headlines(self.finish_response)
 
     def action(self):
         # stub
