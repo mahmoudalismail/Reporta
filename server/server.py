@@ -1,16 +1,28 @@
 import tornado.ioloop
 import tornado.web
+import tornado.escape
 
-class HelloWorldHandler(tornado.web.RequestHandler):
+class EchoHandler(tornado.web.RequestHandler):
     def get(self):
-        self.write("Hello world")
+        self.write(tornado.escape.json_encode({
+            "status": 200,
+            "data": "Hello World success"
+        }))
 
+    def post(self):
+        data = tornado.escape.json_encode(self.request.body)
+        self.write(tornado.escape.json_encode({
+            "status": 200,
+            "data": data
+        }))
 
-application = tornado.web.Application([
-    (r'/', HelloWorldHandler)
-])
+def get_app():
+    return tornado.web.Application([
+        (r'/echo', EchoHandler)
+    ], debug=True)
 
 def main():
+    application = get_app()
     application.listen(8000)
     tornado.ioloop.IOLoop.instance().start()
 
