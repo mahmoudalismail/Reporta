@@ -1,4 +1,4 @@
-news-I-care-about
+Reporta
 =================
 
 Bringing you the news you care about. AlJazeera Media in Context Hackathon. 
@@ -11,7 +11,7 @@ License
 
 The MIT License (MIT)
 
-Copyright (c) 2014 [OUR TEAM]
+Copyright (c) 2014 Booth 1
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
