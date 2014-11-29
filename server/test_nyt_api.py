@@ -5,6 +5,14 @@ import time
 # filter out op-eds
 # figure out what is popular and not through the nytimes article API and not the most popular API
 
+# prompt should be: Do you want to hear about 1,2,3,4,5?
+# Response is trained to be : I want to hear more about x[subject matter] with basic string match 
+
+# Response is trained to be : I want to hear more about the third
+
+
+
+
 api = articleAPI('ae14e1d2f3c40ad244abceddb249d691:17:65860898')
 
 pop_api = articleAPI('e2baeb5cd07d2b2d2c535d23de3300d9:4:65860898')
