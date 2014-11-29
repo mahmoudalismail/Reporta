@@ -28,16 +28,37 @@ class IntentHandler(tornado.web.RequestHandler):
 
     def respond_get_headlines(self, payload):
         self.payload = {
-            "read": "Your articles today are: %s" % payload["headlines"][0]
+            "read": "Your articles today are: %s" % [0]
         }
         r = RedisClient()
-        r.set(self._id + ":" + "headlines", payload["headlines"])
+        r.set(self._id + ":" + "articles", payload)
         self.finish_response()
 
     def get_summary(self):
+        number_words = ["first", "second", "third", "fourth", "fifth", "sixth",
+                        "seventh", "eigth", "ninth", "tenth"]
+        r = RedisClient()
+        articles = r.get(self._id + ":articles")
+        entities = self.outcome["entities"]
+        article = None
         if "topic" in entities:
-            pass
-        return articles
+            topic = entities["topic"]
+            for article in articles:
+                if topic in article:
+                    article = article
+                    break
+        elif "nArticle" in entities:
+            nArticle = entities["nArticle"]
+            for i, number_word in enumerate(number_words):
+                if number_word in nArticle:
+                    if len(articles) >= i:
+                        article = articles[i]
+        else:
+            self.error_response("No matching article")
+        self.payload = {
+            "read": "Your article is %s" % article
+        }
+        self.finish_response()
 
     def finish_response(self):
         self.payload["status"] = 200

@@ -7,9 +7,7 @@ class NYTimes():
     def get_headlines(callback):
         client = tornado.httpclient.AsyncHTTPClient()
         response = yield client.fetch("http://google.com")
-        payload = {
-            "headlines": ["john"]
-        }
+        payload = ["john", "clare", "dogs", "cats"]
         callback(payload)
 
 
