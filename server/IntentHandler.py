@@ -22,7 +22,7 @@ class IntentHandler(tornado.web.RequestHandler):
         articles = []
         return articles
 
-    def finish_response(self):
-        self.payload["status"] = 200
-        self.write(tornado.escape.json_encode(self.payload))
+    def finish_response(self, payload):
+        payload["status"] = 200
+        self.write(tornado.escape.json_encode(payload))
         self.finish()
