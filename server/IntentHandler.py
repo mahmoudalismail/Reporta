@@ -14,7 +14,11 @@ class IntentHandler(tornado.web.RequestHandler):
             self._id = self.outcome["id"]
         else:
             self.error_response("No id passed in outcome")
-        if (intent == "get_headlines"):
+        if (intent == "start"):
+            self.start()
+        elif (intent == "confirm"):
+            self.confirm()
+        elif (intent == "get_headlines"):
             self.get_headlines()
         elif (intent == "get_summary"):
             self.get_summary()
@@ -22,6 +26,25 @@ class IntentHandler(tornado.web.RequestHandler):
             self.get()
         else:
             self.error_response("No recognizable intent found")
+
+    def start(self):
+        NYT.get_headlines()
+        r = RedisClient()
+
+        # Clear the state for this new user
+        r.set(self._id + ":state", "start")
+        r.set(self._id + ":articles", None)
+        r.set(self._id + ":selected", None)
+
+    def respond_start(self, payload):
+        r.set(self._id + ":articles", payload)
+        self.payload = {
+            read: "I have 5 updates on stories you're following. Would you like to hear them?"
+        }
+        self.finish_response()
+
+    def confirm(self):
+        pass
 
     def get_headlines(self):
         NYTimes.get_headlines(self.respond_get_headlines)

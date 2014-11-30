@@ -4,7 +4,7 @@ import tornado.gen
 class NYTimes():
     @staticmethod
     @tornado.gen.coroutine
-    def get_headlines(callback):
+    def get_headlines(callback, topic=None):
         client = tornado.httpclient.AsyncHTTPClient()
         response = yield client.fetch("http://google.com")
         payload = ["john", "clare", "dogs", "cats"]
