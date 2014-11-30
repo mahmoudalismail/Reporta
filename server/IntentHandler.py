@@ -1,7 +1,7 @@
 import tornado.escape
 import tornado.web
 import tornado.gen
-from firebase import firebase
+from FirebaseDB import FirebaseDB
 from fuzzywuzzy import process
 from RedisClient import RedisClient
 from NYTimes import NYTimes
@@ -19,11 +19,11 @@ class IntentHandler(tornado.web.RequestHandler):
         else:
             self.error_response("No id passed in outcome")
 
-        f = firebase.FirebaseApplication('https://reporta-ajz.firebaseio.com', None)
+        f = FirebaseDB()
         if ("user" in self.outcome):
-            f.post('/' + self._id, {"type": "user", "value": self.outcome["user"] })
+            f.post(self._id, {"type": "user", "value": self.outcome["user"] })
         if ("reporta" in self.outcome):
-            f.post('/' + self._id, {"type": "reporta", "value": self.outcome["reporta"] })
+            f.post(self._id, {"type": "reporta", "value": self.outcome["reporta"] })
 
         r = RedisClient()
         self.name = r.get(self._id + ":name")
@@ -172,12 +172,12 @@ class IntentHandler(tornado.web.RequestHandler):
 
 
     def finish_response(self):
-        f = firebase.FirebaseApplication('https://reporta-ajz.firebaseio.com', None)
+        f = FirebaseDB()
         self.payload["status"] = 200
         self.write(tornado.escape.json_encode(self.payload))
         if "_text" in self.outcome:
-            result = f.post('/' + self._id, {"type": "user", "value": self.outcome["_text"]})
-        result = f.post('/' + self._id, {"type": "reporta", "value": self.payload["read"]})
+            result = f.post(self._id, {"type": "user", "value": self.outcome["_text"]})
+        result = f.post(self._id, {"type": "reporta", "value": self.payload["read"]})
         self.finish()
 
     def error_response(self, reason):
