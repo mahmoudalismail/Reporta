@@ -1,4 +1,5 @@
 import os, sys, inspect
+import pickle
 import random
 import re
 
@@ -10,26 +11,18 @@ nltkpath = os.path.join(currentdir, "nltk")
 nltk.data.path.append(nltkpath)
 
 class NLPParser:
-  built = False
-
-  @staticmethod
-  def build():
-    if NLPParser.built:
-        return
-    grammar = r"""
-      NP:   {<DT>?<JJ>?<(N.*)|(PERSON)|(ORGANIZATION)|(LOCATION)>+}
-      PP:   {<(IN)|(AT)|(OD)|(WBS)><NP>}
-      NP:   {<DT>?<NP><PP>}
-      VP:   {<V.*><(NP)|(PP)>}
-      SBAR: {<NP><VP>}
-      """
-    train_sents = brown.tagged_sents()
-    NLPParser.cp = nltk.RegexpParser(grammar)
+  loaded = False
+  def __init__(self):
+    if not NLPParser.loaded:
+      self.load()
+    
+  def load(self):
+    NLPParser.cp = pickle.load(open(os.path.join(nltkpath, 'cp.pickle'), 'rb'))
 
     NLPParser.t0 = nltk.DefaultTagger('NN')
-    NLPParser.t1 = nltk.UnigramTagger(train_sents, backoff=NLPParser.t0)
-    NLPParser.t2 = nltk.BigramTagger(train_sents, backoff=NLPParser.t1)
-    NLPParser.t3 = nltk.TrigramTagger(train_sents, backoff=NLPParser.t2)
+    NLPParser.t1 = pickle.load(open(os.path.join(nltkpath, 't1.pickle'), 'rb'))
+    NLPParser.t2 = pickle.load(open(os.path.join(nltkpath, 't2.pickle'), 'rb'))
+    NLPParser.t3 = pickle.load(open(os.path.join(nltkpath, 't3.pickle'), 'rb'))
 
   @staticmethod
   def simple_headline(headline):
@@ -63,10 +56,7 @@ class NLPParser:
     for node in parsed:
       if type(node) is nltk.Tree and node.label() == 'NE':
         subject = node.leaves()
-        if subject[0][1] == 'DET' or subject[0][1] == 'NNS' or subject[0][1] == 'VBG':
-          subject = ' '.join([t[0] for t in subject])
-        else:
-          subject = 'the ' + ' '.join([t[0] for t in subject])
+        subject = ' '.join([t[0] for t in subject])
         return subject, 'topic'
     np_len = 0
     np_topic = []
@@ -77,10 +67,7 @@ class NLPParser:
           np_len = len(np)
           np_topic = np
     if np_topic:
-      if np_topic[0][1] == 'DET' or np_topic[0][1] == 'NNS' or np_topic[0][1] == 'VBG':
-        np_topic = ' '.join([t[0] for t in np_topic])
-      else:
-        np_topic = 'the ' + ' '.join([t[0] for t in np_topic])
+      np_topic = ' '.join([t[0] for t in np_topic])
       return np_topic, 'topic'
     else:
       for t in tag_sequence:
