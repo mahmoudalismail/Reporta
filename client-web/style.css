@@ -2,11 +2,34 @@
   box-sizing: border-box;
 }
 
+body {
+  text-align: center;
+  background-color: #FFA200;
+  font-family: lato;
+}
+
 #app {
   margin: 0 auto;
   max-width: 700px;
   width: 100%;
   text-align: center;
+}
+
+#reportaLogo {
+  margin-top: 30px;
+  width: 100px;
+  height: 100px;
+  -webkit-animation: rotate 10s infinite; /* Safari 4+ */
+  -webkit-animation-timing-function: linear;
+}
+
+@-webkit-keyframes rotate {
+    from{
+        -webkit-transform: rotate(0deg);
+    }
+    to{
+        -webkit-transform: rotate(360deg);
+    }
 }
 
 #login {

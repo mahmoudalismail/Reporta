@@ -8,7 +8,6 @@ var App = React.createClass({
   render: function() {
     return(
       <div id="app">
-        <h1>Reporta</h1>
         {
           this.state.id ?
           <Timeline _id={this.id} name={this.state.name} app={this} /> :

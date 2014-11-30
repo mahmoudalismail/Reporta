@@ -6,9 +6,6 @@ class RegisterHandler(tornado.web.RequestHandler):
   def post(self):
     payload = {}
     data = tornado.escape.json_decode(self.request.body)
-    print "****"
-    print self.request.body
-    print data
     user_id = data["id"]
     if ("name" not in data):
       payload = {"status": 500}
