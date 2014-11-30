@@ -6,25 +6,29 @@ Reporta is your personal reporter. Bringing a conversational interface to news. 
 Developing on the Server
 ========================
 
-First you need to activate the local environment to use the python virtualenv
+Make sure you have python-dev installed in order to build numpy. On ubuntu it is:
 
 ```
-cd server
-source venv/bin/activate
+apt-get install python-dev
+```
+
+You need to activate the local environment to use the python virtualenv
+
+```
+source server/venv/bin/activate
 ```
 
 Then if it is your first install you should do a pip install to get the requirements
 
 ```
-pip install -r requirements.txt
+pip install -r server/requirements.txt
 ```
 
 You also need redis installed and running. Install docker first, and then install
 redis on docker with.
 
 ```
-cd server/redis
-./install.sh
+.server/redis/install.sh
 ```
 
 You also need to download the NLTK files and build the NLP class.
