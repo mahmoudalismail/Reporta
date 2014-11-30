@@ -30,4 +30,15 @@
 {'type_of_material': u'Op-Ed', 'headline': u'The Trick to Being More Virtuous', 'abstract': u'Arthur C Brooks Op-Ed article describes how he changed his behavior, and even felt happier and more courteous, after he started to use briefcase emblazoned with name of Mormon college Brigham Young University; notes it is example of psychological phenomenon known as moral elevation, emotional state that leads one to act virtuously when exposed to virtues of others; contends voters should challenge political leaders and demand climate of moral elevation.', 'multimedia': [{u'subtype': u'wide', u'url': u'images/2014/02/13/opinion/arthur-brooks/arthur-brooks-thumbWide.jpg', u'height': 126, u'width': 190, u'legacy': {u'wide': u'images/2014/02/13/opinion/arthur-brooks/arthur-brooks-thumbWide.jpg', u'wideheight': u'126', u'widewidth': u'190'}, u'type': u'image'}, {u'subtype': u'xlarge', u'url': u'images/2014/02/13/opinion/arthur-brooks/arthur-brooks-articleLarge.jpg', u'height': 600, u'width': 600, u'legacy': {u'xlargewidth': u'600', u'xlarge': u'images/2014/02/13/opinion/arthur-brooks/arthur-brooks-articleLarge.jpg', u'xlargeheight': u'600'}, u'type': u'image'}, {u'subtype': u'thumbnail', u'url': u'images/2014/02/13/opinion/arthur-brooks/arthur-brooks-thumbStandard.jpg', u'height': 75, u'width': 75, u'legacy': {u'thumbnailheight': u'75', u'thumbnail': u'images/2014/02/13/opinion/arthur-brooks/arthur-brooks-thumbStandard.jpg', u'thumbnailwidth': u'75'}, u'type': u'image'}], 'snippet': u'I was more polite when I carried the briefcase the Mormons gave me.', 'web_url': u'http://www.nytimes.com/2014/11/28/opinion/the-trick-to-being-more-virtuous.html', 'section_name': u'Opinion', 'keywords': [u'United States Politics and Government', u'Mormons (Church of Jesus Christ of Latter-Day Saints)', u'Psychology and Psychologists', u'Colleges and Universities', u'Optimism', u'Brigham Young University', u'Ethics (Personal)'], '_id': u'5477b4d338f0d854b20b216d', 'pub_date': u'20141128'}]
 (venv)ncl:server nkl223$ 
 
-
+fields:
+snippet
+web_url
+abstract
+multimedia
+keywords
+pub_date
+type_of_material
+section_name
+headline
+_id
+	

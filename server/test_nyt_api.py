@@ -2,6 +2,7 @@ from nytimesarticle import articleAPI
 import datetime 
 import time
 
+
 # filter out op-eds
 # figure out what is popular and not through the nytimes article API and not the most popular API
 
@@ -104,18 +105,18 @@ def new_print(art):
 def clean_entry(art):
 	clean = {}
 	clean['snippet'] = art['snippet']
-	clean['web_url'] = art['web_url']
+	# clean['web_url'] = art['web_url']
 	clean['abstract'] = art['abstract']
-	clean['multimedia'] = art['multimedia']
-	clean['keywords'] = []
-	for word in art['keywords']:
-		clean['keywords'].append(word['value'])
+	# clean['multimedia'] = art['multimedia']
+	# clean['keywords'] = []
+	# for word in art['keywords']:
+	# 	clean['keywords'].append(word['value'])
 	#change to just key words to list of just terms
-	clean['pub_date'] = art['pub_date'][:10].replace("-",'')
-	clean['type_of_material'] = art['type_of_material']
-	clean['section_name'] = art['section_name']
+	#clean['pub_date'] = art['pub_date'][:10].replace("-",'')
+	#clean['type_of_material'] = art['type_of_material']
+	#clean['section_name'] = art['section_name']
 	clean['headline'] = art ['headline']['main']
-	clean['_id'] = art['_id']
+	#clean['_id'] = art['_id']
 
 	return clean
 
