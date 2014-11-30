@@ -4,6 +4,8 @@ import tornado.gen
 import fuzzywuzzy
 from RedisClient import RedisClient
 from NYTimes import NYTimes
+from parse_headlines import *
+from phrases import *
 
 class IntentHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
@@ -41,8 +43,9 @@ class IntentHandler(tornado.web.RequestHandler):
         NYTimes.get_headlines(self.respond_start)
 
     def respond_start(self, payload):
+        start_state = UpdatesOrNoUpdates()
         self.payload = {
-            "read": "I have 5 updates on stories you're following. Would you like to hear them?"
+            "read": start_state.get_phrase()
         }
         r = RedisClient()
         r.set(self._id + ":articles", payload)
@@ -62,8 +65,10 @@ class IntentHandler(tornado.web.RequestHandler):
         NYTimes.get_headlines(self.respond_get_headlines)
 
     def respond_get_headlines(self, payload):
+        sentence_headlines, topic_headlines = parse_headlines(payload)
+        found = FoundHeadlines(sentence_headlines, topic_headlines)
         self.payload = {
-            "read": "Your articles today are: %s" % payload[0]["headline"]
+            "read": found.get_phrase()
         }
         r = RedisClient()
 
