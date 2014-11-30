@@ -1,19 +1,29 @@
 import tornado.ioloop
 import tornado.web
 import tornado.escape
-import os
+import os, sys, inspect
+
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+client_path = os.path.join(parentdir, "client-web")
+
 from NLPParser import NLPParser
 
 from EchoHandler import EchoHandler
 from IntentHandler import IntentHandler
 
+from FileHandler import FileHandler
+
 # Load NLP class
 NLPParser.load()
 
 def get_app():
+    print client_path
     return tornado.web.Application([
         (r'/echo', EchoHandler),
-        (r'/', IntentHandler)
+        (r'/api', IntentHandler),
+        (r'/', FileHandler, {"path": os.path.join(client_path, "index.html")}),
+        (r'/(.*)', tornado.web.StaticFileHandler, {"path": client_path})
     ], debug=True)
 
 def main():
