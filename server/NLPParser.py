@@ -80,10 +80,14 @@ class NLPParser:
   def parse_headlines(payload):
     sentence_headlines = []
     topic_headlines = []
-    for item in payload:
+    sentence_orders = []
+    topic_orders = []
+    for i, item in enumerate(payload):
       headline, headline_type = NLPParser.check_headline(item)
       if headline_type == 'sentence':
         sentence_headlines.append(headline)
+        sentence_orders.append(i)
       else:
         topic_headlines.append(headline)
-    return sentence_headlines, topic_headlines
+        topic_orders.append(i)
+    return sentence_headlines, topic_headlines, sentence_orders + topic_orders

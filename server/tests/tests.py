@@ -15,6 +15,7 @@ def all():
     suite.addTest(IntentsTests("confirm_action"))
     suite.addTest(IntentsTests("get_headlines"))
     suite.addTest(IntentsTests("get_headlines_topic"))
+    suite.addTest(IntentsTests("get_summary"))
     return suite
 
 def main():

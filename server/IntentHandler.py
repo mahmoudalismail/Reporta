@@ -1,7 +1,7 @@
 import tornado.escape
 import tornado.web
 import tornado.gen
-import fuzzywuzzy
+from fuzzywuzzy import process
 from RedisClient import RedisClient
 from NYTimes import NYTimes
 from phrases import *
@@ -87,7 +87,7 @@ class IntentHandler(tornado.web.RequestHandler):
 
 
     def respond_get_headlines(self, payload):
-        sentence_headlines, topic_headlines = NLPParser.parse_headlines(map(lambda x: x["headline"], payload))
+        sentence_headlines, topic_headlines, article_order = NLPParser.parse_headlines(map(lambda x: x["headline"], payload))
 
         found = FoundHeadlines(sentence_headlines, topic_headlines, self.name)
         self.payload = {
@@ -96,19 +96,16 @@ class IntentHandler(tornado.web.RequestHandler):
 
         r = RedisClient()
 
-
+        ordered_articles = map(lambda x: payload[x], article_order)
 
         # State transition
         r.set(self._id + ":selected", None)
-        r.set(self._id + ":articles", payload)
+        r.set(self._id + ":articles", ordered_articles)
         r.set(self._id + ":state", "headlines")
         self.finish_response()
 
     # Picks an article given entities
     def extract_article(self):
-        number_words = ["first", "second", "third", "fourth", "fifth", "sixth",
-                        "seventh", "eigth", "ninth", "tenth"]
-
         r = RedisClient()
         articles = r.get(self._id + ":articles")
         selected = r.get(self._id + ":selected")
@@ -116,30 +113,35 @@ class IntentHandler(tornado.web.RequestHandler):
         article = None
 
         entities = self.outcome["entities"]
-        if "topic" in entities:
-            topic = entities["topic"]
-            # fuzzy string matching
-            result = fuzzywuzzy.process.extractOne(topic, map(lambda x: x["headline"], articles))
-            if (result[1] > 75):
-                for i, article_candidate in enumerate(articles):
-                    if (article["headline"] == result[0]):
-                        article = article_candidate
-                        break
-        elif "nArticle" in entities:
-            nArticle = entities["nArticle"]
-            for i, number_word in enumerate(number_words):
-                if number_word in nArticle:
-                    if len(articles) >= i:
-                        article = articles[i]
-                        break
-        elif selected:
+        if "ordinal" in entities:
+            value = entities["ordinal"][0]["value"]
+            if value < len(articles):
+                article = articles[value - 1]
+        if not article and "topic" in entities:
+            topic = entities["topic"][0]["value"]
+            is_current_context = False
+            for word in ["it", "this", "article"]:
+                if word in topic:
+                    article = selected
+                    is_current_context = True
+                    break
+            if not is_current_context:
+                # fuzzy string matching
+                result = process.extractOne(topic, map(lambda x: x["headline"], articles))
+                if (result[1] > 75):
+                    for i, article_candidate in enumerate(articles):
+                        if (article_candidate["headline"] == result[0]):
+                            article = article_candidate
+                            break
+        if not article and selected:
             article = selected
         return article
 
     def get_summary(self):
+        r = RedisClient()
         article = self.extract_article()
         if article:
-            r.set(self._id + ":currentArticle", article)
+            r.set(self._id + ":selected", article)
             self.payload = {
                 "read": "%s. Would you like me to send the full article to your kindle?" % article["snippet"]
             }

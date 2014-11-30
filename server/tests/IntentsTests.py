@@ -52,7 +52,6 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
                                                 body=tornado.escape.json_encode(mock_outcome))
         payload = tornado.escape.json_decode(response.body)
         self.assertEqual(payload["status"], 200)
-        print(payload["read"])
         self.assertTrue(len(payload["read"]) > 0)
         self.assertTrue("?" in payload["read"])
 
@@ -78,7 +77,7 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
     def get_headlines_topic(self):
         mock_outcome = {
             "id": "sadflkja098wf3j2f",
-            "_text" : "Is there any news about pope?",
+            "_text" : "Is there any news about the pope?",
             "intent" : "get_headlines",
             "entities" : {
               "topic" : [ {
@@ -97,27 +96,78 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
         self.assertTrue("?" in payload["read"])
         self.assertTrue("pope" in payload["read"].lower())
 
-    #@tornado.testing.gen_test
-    #def get_summary(self):
-        #mock_outcome = {
-            #"id": "98ds314981321",
-            #"_text" : "Whats happening today?",
-            #"intent" : "get_headlines",
-            #"entities" : { },
-            #"confidence" : 0.525
-        #}
-        #response = yield self.http_client.fetch(self.get_url("/"),
-                                                #method="POST",
-                                                #headers=tornado.httputil.HTTPHeaders({"content-type": "application/json"}),
-                                                #body=tornado.escape.json_encode(mock_outcome))
-        #mock_summary = {
-            #"id": "98ds314981321",
-            #"_text" : "",
-            #"intent" : "get_headlines",
-            #"entities" : { },
-            #"confidence" : 0.525
-        #}
-        #payload = tornado.escape.json_decode(response.body)
-        #self.assertEqual(payload["status"], 200)
-        #self.assertTrue("john" in payload["read"])
-
+    @tornado.testing.gen_test
+    def get_summary(self):
+        mock_outcome = {
+            "id": "safdsafsdf",
+            "_text" : "Is there any news about the pope?",
+            "intent" : "get_headlines",
+            "entities" : {
+              "topic" : [ {
+                "value" : "pope"
+              } ]
+            },
+            "confidence" : 0.855
+        }
+        response = yield self.http_client.fetch(self.get_url("/"),
+                                     method="POST",
+                                     headers=tornado.httputil.HTTPHeaders({"content-type": "application/json"}),
+                                     body=tornado.escape.json_encode(mock_outcome))
+        payload = tornado.escape.json_decode(response.body)
+        mock_outcome = {
+            "id": "safdsafsdf",
+            "_text" : "Tell me more about the third one",
+            "intent" : "get_summary",
+            "entities" : {
+              "ordinal" : [ {
+                "value" : 3
+              } ],
+              "topic" : [ {
+                "value" : "one"
+              } ]
+            },
+            "confidence" : 1.0
+        }
+        response = yield self.http_client.fetch(self.get_url("/"),
+                                                method="POST",
+                                                headers=tornado.httputil.HTTPHeaders({"content-type": "application/json"}),
+                                                body=tornado.escape.json_encode(mock_outcome))
+        payload = tornado.escape.json_decode(response.body)
+        self.assertEqual(payload["status"], 200)
+        self.assertTrue(len(payload["read"]) > 0)
+        mock_outcome =  {
+            "id": "safdsafsdf",
+            "_text" : "Tell me more about the pope",
+            "intent" : "get_summary",
+            "entities" : {
+              "topic" : [ {
+                "value" : "the pope"
+              } ]
+            },
+            "confidence" : 0.928
+        }
+        response = yield self.http_client.fetch(self.get_url("/"),
+                                                method="POST",
+                                                headers=tornado.httputil.HTTPHeaders({"content-type": "application/json"}),
+                                                body=tornado.escape.json_encode(mock_outcome))
+        payload = tornado.escape.json_decode(response.body)
+        self.assertEqual(payload["status"], 200)
+        self.assertTrue(len(payload["read"]) > 0)
+        mock_outcome =  {
+            "id": "safdsafsdf",
+            "_text" : "Tell me more about it",
+            "intent" : "get_summary",
+            "entities" : {
+              "topic" : [ {
+                "value" : "it"
+              } ]
+            },
+            "confidence" : 0.896
+        }
+        response = yield self.http_client.fetch(self.get_url("/"),
+                                                method="POST",
+                                                headers=tornado.httputil.HTTPHeaders({"content-type": "application/json"}),
+                                                body=tornado.escape.json_encode(mock_outcome))
+        payload = tornado.escape.json_decode(response.body)
+        self.assertEqual(payload["status"], 200)
+        self.assertTrue(len(payload["read"]) > 0)
