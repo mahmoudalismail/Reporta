@@ -135,6 +135,7 @@ class IntentHandler(tornado.web.RequestHandler):
             article = selected
         return article
 
+
     def get_summary(self):
         r = RedisClient()
         article = self.extract_article()
@@ -146,6 +147,22 @@ class IntentHandler(tornado.web.RequestHandler):
             self.finish_response()
         else:
             self.error_response("Sorry I don't know what article you are talking about")
+
+    def get_media(self):
+        r = RedisClient()
+        article = self.extract_article()
+        if article:
+            if article['multimedia']:
+                r.set(self._id + ":selected", article)
+                self.payload = {
+                    "read": "%s" % article['multimedia'] # usable url for html
+                }
+                self.finish_response()
+            else:
+                self.error_response("Sorry I don't have images for that article")
+        else:
+            self.error_response("Sorry I don't know what article you are talking about")
+
 
     def finish_response(self):
         self.payload["status"] = 200
