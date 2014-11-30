@@ -10,6 +10,10 @@ class NYTimes():
         payload = ["john", "clare", "dogs", "cats"]
         callback(payload)
 
-
-
-
+    @staticmethod
+    @tornado.gen.coroutine
+    def get_summary(article, callback):
+        client = tornado.httpclient.AsyncHTTPClient()
+        response = yield client.fetch("http://google.com")
+        payload = "John is a good man"
+        callback(payload)
