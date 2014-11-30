@@ -9,8 +9,9 @@ def all():
     suite.addTest(EchoTests("get"))
     suite.addTest(EchoTests("post"))
     suite.addTest(RedisTests("set_and_get"))
-    suite.addTest(IntentsTests("get_headlines"))
     suite.addTest(IntentsTests("start"))
+    suite.addTest(IntentsTests("confirm"))
+    suite.addTest(IntentsTests("get_headlines"))
     return suite
 
 def main():
