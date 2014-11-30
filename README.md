@@ -51,11 +51,11 @@ First you need a data Dockerfile, such as the one here:
 
 [https://github.com/lingz/data-docker](Data Docker)
 
-Then you start the docker file (if needed, using the start script above), but passing
-in the argument "redis-reporta"
+If you don't have this, then download and run it as so
 
 ```
-./start.sh redis-reporta
+./server/redis/install_data.sh
+./server/redis/start_data.sh
 ```
 
 Once the redis-reporta data docker container exists, you can start redis with the persist

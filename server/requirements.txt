@@ -1,6 +1,7 @@
 argparse==1.2.1
 backports.ssl-match-hostname==3.4.0.2
 certifi==14.05.14
+fuzzywuzzy==0.4.0
 nytimesarticle==0.1.0
 redis==2.10.3
 requests==2.4.3
