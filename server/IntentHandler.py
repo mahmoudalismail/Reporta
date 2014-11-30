@@ -1,6 +1,7 @@
 import tornado.escape
 import tornado.web
 import tornado.gen
+import fuzzywuzzy
 from RedisClient import RedisClient
 from NYTimes import NYTimes
 
@@ -30,7 +31,6 @@ class IntentHandler(tornado.web.RequestHandler):
             self.error_response("No recognizable intent found")
 
     def start(self):
-        NYT.get_headlines(self.respond_start)
         r = RedisClient()
 
         # Clear the state for this new user
@@ -38,10 +38,13 @@ class IntentHandler(tornado.web.RequestHandler):
         r.set(self._id + ":articles", None)
         r.set(self._id + ":selected", None)
 
+        NYTimes.get_headlines(self.respond_start)
+
     def respond_start(self, payload):
         self.payload = {
-            read: "I have 5 updates on stories you're following. Would you like to hear them?"
+            "read": "I have 5 updates on stories you're following. Would you like to hear them?"
         }
+        r = RedisClient()
         r.set(self._id + ":articles", payload)
         r.set(self._id + ":state", "start")
         self.finish_response()
@@ -60,7 +63,7 @@ class IntentHandler(tornado.web.RequestHandler):
 
     def respond_get_headlines(self, payload):
         self.payload = {
-            "read": "Your articles today are: %s" % payload[0]
+            "read": "Your articles today are: %s" % payload[0]["headline"]
         }
         r = RedisClient()
 
@@ -70,34 +73,45 @@ class IntentHandler(tornado.web.RequestHandler):
         r.set(self._id + ":state", "headlines")
         self.finish_response()
 
-    @tornado.web.asynchronous
-    def get_summary(self):
+    # Picks an article given entities
+    def extract_article(self):
         number_words = ["first", "second", "third", "fourth", "fifth", "sixth",
                         "seventh", "eigth", "ninth", "tenth"]
+
         r = RedisClient()
         articles = r.get(self._id + ":articles")
-        entities = self.outcome["entities"]
         article = None
+
+        entities = self.outcome["entities"]
         if "topic" in entities:
             topic = entities["topic"]
-            for article in articles:
-                if topic in article:
-                    article = article
-                    break
+            # fuzzy string matching
+            result = fuzzywuzzy.process.extractOne(topic, map(lambda x: x["headline"], articles))
+            if (result[1] > 75):
+                for i, article_candidate in enumerate(articles):
+                    if (article["headline"] == result[0]):
+                        article = article_candidate
+                        break
         elif "nArticle" in entities:
             nArticle = entities["nArticle"]
             for i, number_word in enumerate(number_words):
                 if number_word in nArticle:
                     if len(articles) >= i:
                         article = articles[i]
+                        break
+        return article
+
+    @tornado.web.asynchronous
+    def get_summary(self):
+        article = self.extract_article()
         if article:
-            NYTimes.get_summary(article)
             r.set(self._id + ":currentArticle", article)
-        else:
             self.payload = {
-                "read": "Sorry, I didn't understand that"
+                "read": article["abstract"]
             }
             self.finish_response()
+        else:
+            self.error_response("Sorry I don't know what article you are talking about")
 
     def respond_get_summary(self, summary):
         self.payload = {
