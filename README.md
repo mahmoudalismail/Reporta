@@ -27,6 +27,12 @@ cd server/redis
 ./install.sh
 ```
 
+You also need to download the NLTK files
+
+```
+python server/nltk/install.py
+```
+
 Running the server
 ==================
 

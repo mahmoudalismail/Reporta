@@ -4,6 +4,12 @@ import re
 import nltk
 from nltk.corpus import brown
 
+import os, sys, inspect
+
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+nltkpath = os.path.join(currentdir, "nltk")
+nltk.data.path.append(nltkpath)
+
 grammar = r"""
   NP:   {<DT>?<JJ>?<(N.*)|(PERSON)|(ORGANIZATION)|(LOCATION)>+}
   PP:   {<(IN)|(AT)|(OD)|(WBS)><NP>}
@@ -11,7 +17,7 @@ grammar = r"""
   VP:   {<V.*><(NP)|(PP)>}
   SBAR: {<NP><VP>}
   """
-  
+
 cp = nltk.RegexpParser(grammar)
 
 train_sents = brown.tagged_sents()

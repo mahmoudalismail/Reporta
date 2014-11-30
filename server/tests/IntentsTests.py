@@ -28,7 +28,7 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
         self.assertTrue("5" in payload["read"])
 
     @tornado.testing.gen_test
-    def confirm(self):
+    def confirm_action(self):
         mock_outcome = {
             "id": "asdfjasdfsa",
             "intent" : "start",
