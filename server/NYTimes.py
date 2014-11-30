@@ -1,41 +1,61 @@
 import tornado.httpclient
 import tornado.gen
 import test_nyt_api
+import random
 
 
 class NYTimes():
 
-    def __init__:
+    def __init__(self):
         self.recent_article_tuples = []
         #self.saved_articles = []
 
-    def get_personal_keywords():
-        spare_keywords = ['Al Jazeera', 'Russia', 'Water','Obama','Healthcare','Fire']
+    def get_personal_keywords(self):
+        spare_keywords = ['Al Jazeera', 'Russia', 'Water','Obama','Healthcare','Ferguson','Fire']
         keywords = []
-        for art in self.recent_article_tuples.shuffle():
-            keywords.append(art[0])
+        if self.recent_article_tuples:
+            for art in random.shuffle(self.recent_article_tuples):
+                keywords.append(art[0])
         for i in range (5-len(self.recent_article_tuples)):
             keywords.append(spare_keywords[i])
         return keywords
 
-    @staticmethod
-    @tornado.gen.coroutine
-    def get_headlines(callback, topic=None, keywords=None):
-        #if there is a topic, search about that topic
-        #none topic is general headline using previous keywords used
-    
+    def test(self):
+        payload = []
+        topic = 'America'
         if topic:
             specific_articles = test_nyt_api.get_5_specific(topic)
             if specific_articles:
                 for art in specific_articles:
-                    self.recent_article_tuples.append((topic,test_nyt_api.clean_entry(art)))
+                    clean_art = test_nyt_api.clean_entry(art)
+                    self.recent_article_tuples.append((topic,clean_art))
+                    payload.append(test_nyt_api.clean_entry(art))
+
+        print payload
+        
+    @staticmethod
+    @tornado.gen.coroutine
+    def get_headlines(self,callback, topic=None, keywords=None):
+        #if there is a topic, search about that topic
+        #none topic is general headline using previous keywords used
+        payload = []
+        if topic:
+            specific_articles = test_nyt_api.get_5_specific(topic)
+            if specific_articles:
+                for art in specific_articles:
+                    clean_art = test_nyt_api.clean_entry(art)
+                    self.recent_article_tuples.append((topic,clean_art))
+                    payload.append(test_nyt_api.clean_entry(art))
 
         else:
             keywords = get_personal_keywords()
             personal_articles = test_nyt_api.get_5_personal()
             if personal_articles:
                 for art in personal_articles:
-                    self.recent_article_tuples.append((topic,test_nyt_api.clean_entry(art)))
+                    clean_art = test_nyt_api.clean_entry(art)
+                    self.recent_article_tuples.append((topic,clean_art))
+                    payload.append(test_nyt_api.clean_entry(art))
+
 
 
         client = tornado.httpclient.AsyncHTTPClient()
@@ -66,21 +86,26 @@ class NYTimes():
 
 
 def main():
-    recent_articles = []
+    # recent_articles = []
 
-    saved_articles = []
+    # saved_articles = []
 
-    keywords = ['Ferguson','Healthcare']
+    # keywords = ['Ferguson','Healthcare']
 
     # personal = get_5_personal()
     # for k in personal:
     #   new_print(k)
     # print("\n"*(10))
 
+    times = NYTimes()
+    keywords = times.get_personal_keywords()
+    times.test()
 
-    specific = get_5_specific("Russia")
-    for s in specific:
-        new_print(s)
+
+
+    # specific = get_5_specific("Russia")
+    # for s in specific:
+    #     new_print(s)
 
 
     
@@ -90,6 +115,5 @@ def main():
 if __name__ == "__main__":
     main()
 
-    s
 
 
