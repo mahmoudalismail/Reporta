@@ -1,6 +1,7 @@
 import tornado.escape
 import tornado.web
 import tornado.gen
+from firebase import firebase
 from fuzzywuzzy import process
 from RedisClient import RedisClient
 from NYTimes import NYTimes
@@ -150,8 +151,10 @@ class IntentHandler(tornado.web.RequestHandler):
             self.error_response("Sorry I don't know what article you are talking about")
 
     def finish_response(self):
+        firebase = firebase.FirebaseApplication('https://reporta-ajz.firebaseio.com', None)
         self.payload["status"] = 200
         self.write(tornado.escape.json_encode(self.payload))
+        result = firebase.post('/self._id', self.payload)
         self.finish()
 
     def error_response(self, reason):
