@@ -19,6 +19,12 @@ class IntentHandler(tornado.web.RequestHandler):
         else:
             self.error_response("No id passed in outcome")
 
+        f = firebase.FirebaseApplication('https://reporta-ajz.firebaseio.com', None)
+        if ("user" in self.outcome):
+            f.post('/' + self._id, {"type": "user", "value": self.outcome["user"] })
+        if ("reporta" in self.outcome):
+            f.post('/' + self._id, {"type": "reporta", "value": self.outcome["reporta"] })
+
         r = RedisClient()
         self.name = r.get(self._id + ":name")
 
@@ -166,10 +172,12 @@ class IntentHandler(tornado.web.RequestHandler):
 
 
     def finish_response(self):
-        firebase = firebase.FirebaseApplication('https://reporta-ajz.firebaseio.com', None)
+        f = firebase.FirebaseApplication('https://reporta-ajz.firebaseio.com', None)
         self.payload["status"] = 200
         self.write(tornado.escape.json_encode(self.payload))
-        result = firebase.post('/self._id', self.payload)
+        if "_text" in self.outcome:
+            result = f.post('/' + self._id, {"type": "user", "value": self.outcome["_text"]})
+        result = f.post('/' + self._id, {"type": "reporta", "value": self.payload["read"]})
         self.finish()
 
     def error_response(self, reason):
