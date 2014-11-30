@@ -92,17 +92,19 @@ var Login = React.createClass({
   handleRegister: function(e) {
     e.preventDefault();
     var self = this;
+    var id = self.refs.registerEmail.getDOMNode().value;
+    var name = self.refs.registerName.getDOMNode().value;
     $.ajax({
     type: "POST",
       url: "/register",
       data: JSON.stringify({
-        id: localStorage.id,
-        name: localStorage.name
+        id: id,
+        name: name
       }),
-      success: function() {
+      success: function(data) {
         if (data.status == 200) {
-          localStorage.id = self.refs.registerEmail.getDOMNode().value;
-          localStorage.name = self.refs.registerName.getDOMNode().value;
+          localStorage.id = id;
+          localStorage.name = name;
           self.props.app.setState({
             id: localStorage.id,
             name: localStorage.name

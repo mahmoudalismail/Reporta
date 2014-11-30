@@ -1,7 +1,14 @@
+import tornado.web
+import tornado.escape
+from RedisClient import RedisClient
+
 class RegisterHandler(tornado.web.RequestHandler):
   def post(self):
     payload = {}
     data = tornado.escape.json_decode(self.request.body)
+    print "****"
+    print self.request.body
+    print data
     user_id = data["id"]
     if ("name" not in data):
       payload = {"status": 500}
@@ -14,5 +21,4 @@ class RegisterHandler(tornado.web.RequestHandler):
         "name": user_name,
         "status": 200
       }
-    self.write(tornado.escape.json_encode(self.payload))
-    self.finish_response()
+    self.write(tornado.escape.json_encode(payload))
