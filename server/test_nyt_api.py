@@ -26,25 +26,18 @@ def clean_entry(art):
 
 def get_articles(cb, so_far=[], topic=None,startdate=None, enddate=None, page=0, limit=5):
         def respond_get_articles(payload):
-                print 2
                 good_articles = []
                 for art in payload['response']['docs']:
                         if art['keywords'] and (art['snippet'] or art['abstract']) and art['multimedia'] and art['type_of_material']=='News':
                                 good_articles.append(clean_entry(art))
-                        good_articles += so_far
-                        print "========="
-                        print len(good_articles)
-                        print "========="
-                        if len(good_articles) >= limit:
-                                print 5
-                                cb(good_articles)
-                        else:
-                                print 6
-                                get_articles(cb, so_far=good_articles, topic=topic, startdate=startdate,
-                                            enddate=enddate, page=(page+1), limit=limit)
+                good_articles += so_far
+                if len(good_articles) >= limit:
+                        cb(good_articles)
+                else:
+                        get_articles(cb, so_far=good_articles, topic=topic, startdate=startdate,
+                                    enddate=enddate, page=(page+1), limit=limit)
 
 
-        print 1
         if not startdate and not enddate:
                 api.search(respond_get_articles, q = topic , page = page, sort='newest')
         elif not topic:

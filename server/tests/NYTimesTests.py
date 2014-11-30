@@ -11,12 +11,9 @@ from NYTimes import NYTimes
 
 class NYTimesTests(tornado.testing.AsyncTestCase):
     def cb(self, payload):
-        print 1
-        print payload
         self.assertTrue(len(payload) > 0)
         self.assertTrue("snippet" in payload[0])
         self.assertTrue("multimedia" in payload[0])
-        self.assertTrue("abstract" in payload[0])
         self.assertTrue("keywords" in payload[0])
         self.stop()
 

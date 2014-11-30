@@ -90,7 +90,6 @@ class articleAPI(object):
         
         return values
 
-    @tornado.gen.coroutine
     def search(self, callback,
                 response_format = None, 
                 key = None, 
@@ -115,6 +114,7 @@ class articleAPI(object):
         )
         
         client = tornado.httpclient.AsyncHTTPClient()
-        response = yield client.fetch(url)
-        payload = tornado.escape.json_decode(response.body)
-        callback(payload)
+        def parse_result(response):
+            payload = tornado.escape.json_decode(response.body)
+            callback(payload)
+        response = client.fetch(url, parse_result)
