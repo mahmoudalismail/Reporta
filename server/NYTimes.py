@@ -3,7 +3,6 @@ import tornado.gen
 import test_nyt_api
 import random
 
-
 class NYTimes():
 
     def __init__(self):
@@ -32,29 +31,29 @@ class NYTimes():
                     payload.append(test_nyt_api.clean_entry(art))
 
         print payload
-        
+
     @staticmethod
     @tornado.gen.coroutine
-    def get_headlines(self,callback, topic=None, keywords=None):
+    def get_headlines(callback, topic=None, keywords=None):
         #if there is a topic, search about that topic
         #none topic is general headline using previous keywords used
-        payload = []
-        if topic:
-            specific_articles = test_nyt_api.get_5_specific(topic)
-            if specific_articles:
-                for art in specific_articles:
-                    clean_art = test_nyt_api.clean_entry(art)
-                    self.recent_article_tuples.append((topic,clean_art))
-                    payload.append(test_nyt_api.clean_entry(art))
+        #payload = []
+        #if topic:
+            #specific_articles = test_nyt_api.get_5_specific(topic)
+            #if specific_articles:
+                #for art in specific_articles:
+                    #clean_art = test_nyt_api.clean_entry(art)
+                    #self.recent_article_tuples.append((topic,clean_art))
+                    #payload.append(test_nyt_api.clean_entry(art))
 
-        else:
-            keywords = get_personal_keywords()
-            personal_articles = test_nyt_api.get_5_personal()
-            if personal_articles:
-                for art in personal_articles:
-                    clean_art = test_nyt_api.clean_entry(art)
-                    self.recent_article_tuples.append((topic,clean_art))
-                    payload.append(test_nyt_api.clean_entry(art))
+        #else:
+            #keywords = get_personal_keywords()
+            #personal_articles = test_nyt_api.get_5_personal()
+            #if personal_articles:
+                #for art in personal_articles:
+                    #clean_art = test_nyt_api.clean_entry(art)
+                    #self.recent_article_tuples.append((topic,clean_art))
+                    #payload.append(test_nyt_api.clean_entry(art))
 
 
 
@@ -107,9 +106,6 @@ def main():
     # for s in specific:
     #     new_print(s)
 
-
-    
-    
 
 
 if __name__ == "__main__":

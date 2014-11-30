@@ -1,9 +1,17 @@
 import tornado.ioloop
 import tornado.web
 import tornado.escape
+import os
+from NLPParser import NLPParser
+
 from EchoHandler import EchoHandler
 from IntentHandler import IntentHandler
-import os
+
+# First initialization will cause NLP
+# data to be built
+print "Building NLP..."
+NLPParser.build()
+print "Building NLP done"
 
 def get_app():
     return tornado.web.Application([

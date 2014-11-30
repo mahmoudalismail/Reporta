@@ -5,18 +5,17 @@ import re
 import nltk
 from nltk.corpus import brown
 
-
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 nltkpath = os.path.join(currentdir, "nltk")
 nltk.data.path.append(nltkpath)
 
 class NLPParser:
   built = False
-  def __init__(self):
-    if not NLPParser.built:
-      self.build()
-    
-  def build(self):
+
+  @staticmethod
+  def build():
+    if NLPParser.built:
+        return
     grammar = r"""
       NP:   {<DT>?<JJ>?<(N.*)|(PERSON)|(ORGANIZATION)|(LOCATION)>+}
       PP:   {<(IN)|(AT)|(OD)|(WBS)><NP>}
@@ -25,14 +24,14 @@ class NLPParser:
       SBAR: {<NP><VP>}
       """
     train_sents = brown.tagged_sents()
-    
     NLPParser.cp = nltk.RegexpParser(grammar)
 
     NLPParser.t0 = nltk.DefaultTagger('NN')
-    NLPParser.t1 = nltk.UnigramTagger(train_sents, backoff=t0)
-    NLPParser.t2 = nltk.BigramTagger(train_sents, backoff=t1)
-    NLPParser.t3 = nltk.TrigramTagger(train_sents, backoff=t2)
+    NLPParser.t1 = nltk.UnigramTagger(train_sents, backoff=NLPParser.t0)
+    NLPParser.t2 = nltk.BigramTagger(train_sents, backoff=NLPParser.t1)
+    NLPParser.t3 = nltk.TrigramTagger(train_sents, backoff=NLPParser.t2)
 
+  @staticmethod
   def simple_headline(headline):
     match_obj = re.match(r'(.*)\: (.*)', headline)
     if match_obj:
@@ -47,7 +46,8 @@ class NLPParser:
           return match_obj.group(2) + ' ' + match_obj.group(1)
         else:
           return headline
-      
+
+  @staticmethod
   def check_headline(headline):
     headline = headline.lower()
     tokens = nltk.word_tokenize(headline)
@@ -85,17 +85,17 @@ class NLPParser:
     else:
       for t in tag_sequence:
         if re.match(r'VB.*', t):
-          return simple_headline(headline), 'sentence'
-      return simple_headline(headline), 'topic'
+          return NLPParser.simple_headline(headline), 'sentence'
+      return NLPParser.simple_headline(headline), 'topic'
 
+  @staticmethod
   def parse_headlines(payload):
     sentence_headlines = []
     topic_headlines = []
     for item in payload:
-      headline, headline_type = check_headline(item)
+      headline, headline_type = NLPParser.check_headline(item)
       if headline_type == 'sentence':
         sentence_headlines.append(headline)
       else:
         topic_headlines.append(headline)
     return sentence_headlines, topic_headlines
-    

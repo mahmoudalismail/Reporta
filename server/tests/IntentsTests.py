@@ -25,7 +25,7 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
                                                 body=tornado.escape.json_encode(mock_outcome))
         payload = tornado.escape.json_decode(response.body)
         self.assertEqual(payload["status"], 200)
-        self.assertTrue("5" in payload["read"])
+        self.assertTrue("?" in payload["read"])
 
     @tornado.testing.gen_test
     def confirm_action(self):
@@ -50,7 +50,7 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
                                                 body=tornado.escape.json_encode(mock_outcome))
         payload = tornado.escape.json_decode(response.body)
         self.assertEqual(payload["status"], 200)
-        self.assertTrue("Ferguson" in payload["read"])
+        self.assertTrue("aids" in payload["read"])
 
     @tornado.testing.gen_test
     def get_headlines(self):
@@ -67,8 +67,7 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
                                                 body=tornado.escape.json_encode(mock_outcome))
         payload = tornado.escape.json_decode(response.body)
         self.assertEqual(payload["status"], 200)
-        self.assertTrue("Ferguson" in payload["read"])
-
+        self.assertTrue("aids" in payload["read"])
 
     #@tornado.testing.gen_test
     #def get_summary(self):
