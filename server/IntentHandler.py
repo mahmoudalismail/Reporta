@@ -17,8 +17,8 @@ class IntentHandler(tornado.web.RequestHandler):
             self.error_response("No id passed in outcome")
         if (intent == "start"):
             self.start()
-        elif (intent == "confirm"):
-            self.confirm()
+        elif (intent == "confirm_action"):
+            self.confirm_action()
         elif (intent == "get_headlines"):
             self.get_headlines()
         elif (intent == "get_summary"):
@@ -49,14 +49,14 @@ class IntentHandler(tornado.web.RequestHandler):
         r.set(self._id + ":state", "start")
         self.finish_response()
 
-    def confirm(self):
+    def confirm_action(self):
         r = RedisClient()
         current_state = r.get(self._id + ":state")
         if (current_state != "start"):
             self.error_response("Sorry, what are you saying okay for?")
         else:
             articles = r.get(self._id + ":articles")
-            respond_get_headlines(articles)
+            self.respond_get_headlines(articles)
 
     def get_headlines(self):
         NYTimes.get_headlines(self.respond_get_headlines)
