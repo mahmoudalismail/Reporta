@@ -14,6 +14,20 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
         return server.get_app()
 
     @tornado.testing.gen_test
+    def start(self):
+        mock_outcome = {
+            "id": "absc0sasdadsaf",
+            "intent" : "start",
+        }
+        response = yield self.http_client.fetch(self.get_url("/"),
+                                                method="POST",
+                                                headers=tornado.httputil.HTTPHeaders({"content-type": "application/json"}),
+                                                body=tornado.escape.json_encode(mock_outcome))
+        payload = tornado.escape.json_decode(response.body)
+        self.assertEqual(payload["status"], 200)
+        self.assertTrue("5" in payload["read"])
+
+    @tornado.testing.gen_test
     def get_headlines(self):
         mock_outcome = {
             "id": "98ds314981321",
@@ -28,7 +42,8 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
                                                 body=tornado.escape.json_encode(mock_outcome))
         payload = tornado.escape.json_decode(response.body)
         self.assertEqual(payload["status"], 200)
-        self.assertTrue("john" in payload["read"])
+        self.assertTrue("Ferguson" in payload["read"])
+
 
     #@tornado.testing.gen_test
     #def get_summary(self):

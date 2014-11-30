@@ -8,8 +8,9 @@ def all():
     suite = unittest.TestSuite()
     suite.addTest(EchoTests("get"))
     suite.addTest(EchoTests("post"))
-    suite.addTest(IntentsTests("get_headlines"))
     suite.addTest(RedisTests("set_and_get"))
+    suite.addTest(IntentsTests("get_headlines"))
+    suite.addTest(IntentsTests("start"))
     return suite
 
 def main():
