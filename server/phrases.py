@@ -18,6 +18,7 @@ class Greeting:
       "Hey %s" % self.username,
       "Good %(tod)s %(user)s" % {'tod': tod, 'user': self.username}
     ]
+    #ADD EXCLAMATIONS LATER
     return self.phrases
   def get_phrase(self):
     n = random.randrange(len(self.phrases))
