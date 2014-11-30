@@ -21,7 +21,7 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
             "user": "Hey Reporta",
             "reporta": "Hi John. How are you today?"
         }
-        response = yield self.http_client.fetch(self.get_url("/"),
+        response = yield self.http_client.fetch(self.get_url("/api"),
                                                 method="POST",
                                                 headers=tornado.httputil.HTTPHeaders({"content-type": "application/json"}),
                                                 body=tornado.escape.json_encode(mock_outcome))
@@ -35,7 +35,7 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
             "id": "asdfjasdfsa",
             "intent" : "start",
         }
-        yield self.http_client.fetch(self.get_url("/"),
+        yield self.http_client.fetch(self.get_url("/api"),
                                                 method="POST",
                                                 headers=tornado.httputil.HTTPHeaders({"content-type": "application/json"}),
                                                 body=tornado.escape.json_encode(mock_outcome))
@@ -46,7 +46,7 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
           "entities" : { },
           "confidence" : 0.327
         }
-        response = yield self.http_client.fetch(self.get_url("/"),
+        response = yield self.http_client.fetch(self.get_url("/api"),
                                                 method="POST",
                                                 headers=tornado.httputil.HTTPHeaders({"content-type": "application/json"}),
                                                 body=tornado.escape.json_encode(mock_outcome))
@@ -64,7 +64,7 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
             "entities" : { },
             "confidence" : 0.525
         }
-        response = yield self.http_client.fetch(self.get_url("/"),
+        response = yield self.http_client.fetch(self.get_url("/api"),
                                                 method="POST",
                                                 headers=tornado.httputil.HTTPHeaders({"content-type": "application/json"}),
                                                 body=tornado.escape.json_encode(mock_outcome))
@@ -86,7 +86,7 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
             },
             "confidence" : 0.855
         }
-        response = yield self.http_client.fetch(self.get_url("/"),
+        response = yield self.http_client.fetch(self.get_url("/api"),
                                                 method="POST",
                                                 headers=tornado.httputil.HTTPHeaders({"content-type": "application/json"}),
                                                 body=tornado.escape.json_encode(mock_outcome))
@@ -109,7 +109,7 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
             },
             "confidence" : 0.855
         }
-        response = yield self.http_client.fetch(self.get_url("/"),
+        response = yield self.http_client.fetch(self.get_url("/api"),
                                      method="POST",
                                      headers=tornado.httputil.HTTPHeaders({"content-type": "application/json"}),
                                      body=tornado.escape.json_encode(mock_outcome))
@@ -128,7 +128,7 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
             },
             "confidence" : 1.0
         }
-        response = yield self.http_client.fetch(self.get_url("/"),
+        response = yield self.http_client.fetch(self.get_url("/api"),
                                                 method="POST",
                                                 headers=tornado.httputil.HTTPHeaders({"content-type": "application/json"}),
                                                 body=tornado.escape.json_encode(mock_outcome))
@@ -146,7 +146,7 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
             },
             "confidence" : 0.928
         }
-        response = yield self.http_client.fetch(self.get_url("/"),
+        response = yield self.http_client.fetch(self.get_url("/api"),
                                                 method="POST",
                                                 headers=tornado.httputil.HTTPHeaders({"content-type": "application/json"}),
                                                 body=tornado.escape.json_encode(mock_outcome))
@@ -164,7 +164,7 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
             },
             "confidence" : 0.896
         }
-        response = yield self.http_client.fetch(self.get_url("/"),
+        response = yield self.http_client.fetch(self.get_url("/api"),
                                                 method="POST",
                                                 headers=tornado.httputil.HTTPHeaders({"content-type": "application/json"}),
                                                 body=tornado.escape.json_encode(mock_outcome))

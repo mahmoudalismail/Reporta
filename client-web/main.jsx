@@ -11,11 +11,25 @@ var App = React.createClass({
 var Login = React.createClass({
   render: function() {
     return (
-      <div>
-        <label for="email">Email</label>
-        <input type="text" id="email" name="email" />
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name" />
+      <div id="login">
+        <h1>Login</h1>
+        <form class="pure-form">
+          <fieldset class="pure-group">
+              <input type="text" class="pure-input-1-2" placeholder="Email">
+          </fieldset>
+
+          <button type="submit" class="pure-button pure-input-1-2 pure-button-primary">Login</button>
+        </form>
+
+        <h1>Register</h1>
+        <form class="pure-form">
+          <fieldset class="pure-group">
+              <input type="text" class="pure-input-1-2" placeholder="Email">
+              <input type="text" class="pure-input-1-2" placeholder="Name">
+          </fieldset>
+
+          <button type="submit" class="pure-button pure-input-1-2 pure-button-primary">Register</button>
+        </form>
       </div>
     );
   }
