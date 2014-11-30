@@ -3,8 +3,6 @@ import tornado.gen
 import test_nyt_api
 import random
 
-
-
 class NYTimes():
 
     def __init__(self):
@@ -31,8 +29,6 @@ class NYTimes():
         return new_payload
 
 
-
-
     def test(self):
         payload = []
         topic = 'Ferguson'
@@ -56,7 +52,7 @@ class NYTimes():
 
     @staticmethod
     @tornado.gen.coroutine
-    def get_headlines(self,callback, topic=None, keywords=None):
+    def get_headlines(callback, topic=None, keywords=None):
         #if there is a topic, search about that topic
         #none topic is general headline using previous keywords used
         payload = []
@@ -76,7 +72,6 @@ class NYTimes():
                     clean_art = test_nyt_api.clean_entry(art) 
                     self.recent_article_tuples.append((topic,clean_art))
                     payload.append(test_nyt_api.clean_entry(art))
-
 
 
         client = tornado.httpclient.AsyncHTTPClient()
@@ -106,20 +101,16 @@ class NYTimes():
         callback(payload)
 
 
-def main():
+# def main():
 
-    times = NYTimes()
-    keywords = times.get_personal_keywords()
-    times.test()
-
-
-
-    
-    
+#     times = NYTimes()
+#     keywords = times.get_personal_keywords()
+#     times.test()
 
 
-if __name__ == "__main__":
-    main()
+
+# if __name__ == "__main__":
+#     main()
 
 
 

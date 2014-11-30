@@ -4,8 +4,8 @@ import tornado.gen
 import fuzzywuzzy
 from RedisClient import RedisClient
 from NYTimes import NYTimes
-from parse_headlines import *
 from phrases import *
+from NLPParser import NLPParser
 
 class IntentHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
@@ -65,7 +65,7 @@ class IntentHandler(tornado.web.RequestHandler):
         NYTimes.get_headlines(self.respond_get_headlines)
 
     def respond_get_headlines(self, payload):
-        sentence_headlines, topic_headlines = parse_headlines(payload)
+        sentence_headlines, topic_headlines = NLPParser.parse_headlines(map(lambda x: x["headline"], payload))
         found = FoundHeadlines(sentence_headlines, topic_headlines)
         self.payload = {
             "read": found.get_phrase()
