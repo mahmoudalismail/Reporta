@@ -27,11 +27,13 @@ cd server/redis
 ./install.sh
 ```
 
-You also need to download the NLTK files
+You also need to download the NLTK files and build the NLP class.
 
 ```
 python server/nltk/install.py
+python server/nltk/build.py
 ```
+
 
 Running the server
 ==================

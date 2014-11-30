@@ -14,9 +14,10 @@ class NLPParser:
   loaded = False
   def __init__(self):
     if not NLPParser.loaded:
-      self.load()
-    
-  def load(self):
+      NLPParser.load()
+
+  @staticmethod
+  def load():
     NLPParser.cp = pickle.load(open(os.path.join(nltkpath, 'cp.pickle'), 'rb'))
 
     NLPParser.t0 = nltk.DefaultTagger('NN')

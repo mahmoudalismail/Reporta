@@ -7,11 +7,8 @@ from NLPParser import NLPParser
 from EchoHandler import EchoHandler
 from IntentHandler import IntentHandler
 
-# First initialization will cause NLP
-# data to be built
-print "Building NLP..."
-NLPParser.build()
-print "Building NLP done"
+# Load NLP class
+NLPParser.load()
 
 def get_app():
     return tornado.web.Application([
