@@ -192,3 +192,65 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
         payload = tornado.escape.json_decode(response.body)
         self.assertEqual(payload["status"], 200)
         self.assertTrue(len(payload["read"]) > 0)
+
+    def get_media(self):
+        mock_outcome = {
+            "id": "safdsafsdf",
+            "_text" : "What are the headlines from France?",
+            "intent" : "get_headlines",
+            "entities" : {
+              "topic" : [ {
+                "value" : "France"
+              } ]
+            },
+            "confidence" : 1.0
+        }
+        response = yield self.http_client.fetch(self.get_url("/api"),
+                                     method="POST",
+                                     headers=tornado.httputil.HTTPHeaders({"content-type": "application/json"}),
+                                     body=tornado.escape.json_encode(mock_outcome))
+        payload = tornado.escape.json_decode(response.body)
+    
+        mock_outcome =  {
+            "id": "safdsafsdf",
+            "_text" : "Get me images from the fourth article",
+            "intent" : "get_media",
+            "entities" : {
+              "ordinal" : [ {
+                "value" : 4
+              } ]
+            },
+            "confidence" : 0.999
+        }
+        response = yield self.http_client.fetch(self.get_url("/api"),
+                                                method="POST",
+                                                headers=tornado.httputil.HTTPHeaders({"content-type": "application/json"}),
+                                                body=tornado.escape.json_encode(mock_outcome))
+        payload = tornado.escape.json_decode(response.body)
+        self.assertEqual(payload["status"], 200)
+        self.assertTrue(len(payload["read"]) > 0)
+        self.assertTrue("http://www.nytimes.com/images" in payload["read"])
+        self.assertFalse("thumbStandard.jpg" in payload["read"])
+
+        mock_outcome =  {
+            "id": "safdsafsdf",
+            "_text" : "Get media about the second one",
+            "intent" : "get_media",
+            "entities" : {
+              "ordinal" : [ {
+                "value" : 2
+              } ]
+            },
+            "confidence" : 0.999
+        }
+        response = yield self.http_client.fetch(self.get_url("/api"),
+                                                method="POST",
+                                                headers=tornado.httputil.HTTPHeaders({"content-type": "application/json"}),
+                                                body=tornado.escape.json_encode(mock_outcome))
+        payload = tornado.escape.json_decode(response.body)
+        self.assertEqual(payload["status"], 200)
+        self.assertTrue(len(payload["read"]) > 0)
+        self.assertTrue("http://www.nytimes.com/images" in payload["read"])
+        self.assertFalse("thumbStandard.jpg" in payload["read"])
+
+

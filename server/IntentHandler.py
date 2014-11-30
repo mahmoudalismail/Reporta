@@ -19,10 +19,8 @@ class IntentHandler(tornado.web.RequestHandler):
         else:
             self.error_response("No id passed in outcome")
 
-        if ("name" in self.outcome):
-            self.name = self.outcome["name"]
-        else:
-            self.name = None
+        r = RedisClient()
+        self.name = r.get(self._id + ":name")
 
         if (intent == "start"):
             self.start()
@@ -138,6 +136,7 @@ class IntentHandler(tornado.web.RequestHandler):
             article = selected
         return article
 
+
     def get_summary(self):
         r = RedisClient()
         article = self.extract_article()
@@ -149,6 +148,22 @@ class IntentHandler(tornado.web.RequestHandler):
             self.finish_response()
         else:
             self.error_response("Sorry I don't know what article you are talking about")
+
+    def get_media(self):
+        r = RedisClient()
+        article = self.extract_article()
+        if article:
+            if article['multimedia']:
+                r.set(self._id + ":selected", article)
+                self.payload = {
+                    "read": "%s" % article['multimedia'] # usable url for html
+                }
+                self.finish_response()
+            else:
+                self.error_response("Sorry I don't have images for that article")
+        else:
+            self.error_response("Sorry I don't know what article you are talking about")
+
 
     def finish_response(self):
         firebase = firebase.FirebaseApplication('https://reporta-ajz.firebaseio.com', None)
