@@ -7,8 +7,6 @@ api = articleAPI('ae14e1d2f3c40ad244abceddb249d691:17:65860898')
 def get_articles(topic=None,startdate=None, enddate=None, page=0, limit=1):
 	good_articles = []
 	
-	# sort newest
-	# returns the first clean article
 	for i in range(20):
 		if not startdate and not enddate:
 			query = api.search( q = topic , page = page+i, sort='newest')
@@ -18,7 +16,6 @@ def get_articles(topic=None,startdate=None, enddate=None, page=0, limit=1):
 		else:
 			query = api.search( q = topic, page = page+i, sort='newest', begin_date=startdate, end_date=enddate)#, fl={document_type:'article'})
 		for art in query['response']['docs']:
-			# if art['keywords'] and art['multimedia'] and art['abstract'] and art['snippet'] and art['abstract'] != art['snippet'] and not isAlreadyFound(art) and art['type_of_material']=='News':
 			if art['keywords'] and (art['snippet'] or art['abstract']) and art['multimedia'] and art['type_of_material']=='News':
 				good_articles.append(art)
 			if len(good_articles)>=limit:
@@ -43,7 +40,7 @@ def clean_entry(art):
 	#clean['section_name'] = art['section_name']
 	clean['headline'] = art ['headline']['main'].encode('ascii', 'ignore')
 	#clean['_id'] = art['_id']
-	
+
 	return clean
 
 def get_5_specific(keyword):

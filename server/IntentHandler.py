@@ -65,12 +65,16 @@ class IntentHandler(tornado.web.RequestHandler):
         NYTimes.get_headlines(self.respond_get_headlines)
 
     def respond_get_headlines(self, payload):
+
+
         sentence_headlines, topic_headlines = NLPParser.parse_headlines(map(lambda x: x["headline"], payload))
         found = FoundHeadlines(sentence_headlines, topic_headlines)
         self.payload = {
             "read": found.get_phrase()
         }
         r = RedisClient()
+
+
 
         # State transition
         r.set(self._id + ":selected", None)
