@@ -18,10 +18,8 @@ class IntentHandler(tornado.web.RequestHandler):
         else:
             self.error_response("No id passed in outcome")
 
-        if ("name" in self.outcome):
-            self.name = self.outcome["name"]
-        else:
-            self.name = None
+        r = RedisClient()
+        self.name = r.get(self._id + ":name")
 
         if (intent == "start"):
             self.start()
