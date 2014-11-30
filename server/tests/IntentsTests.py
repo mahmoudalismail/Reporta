@@ -171,7 +171,8 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
         payload = tornado.escape.json_decode(response.body)
         self.assertEqual(payload["status"], 200)
         self.assertTrue(len(payload["read"]) > 0)
-
+        
+    @tornado.testing.gen_test
     def get_media(self):
         mock_outcome = {
             "id": "safdsafsdf",
