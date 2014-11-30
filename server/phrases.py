@@ -1,6 +1,9 @@
 import datetime
 import random
 
+def name_or_empty(name):
+    return " " + name if name and random.random() < 0.3 else ""
+
 class Greeting:
   def __init__(self, username, request_time):
     self.username = username
@@ -25,18 +28,18 @@ class Greeting:
     return self.phrases[n]
 
 class UpdatesOrNoUpdates:
-  def __init__(self, updates=False):
+  def __init__(self, name, updates=False):
     self.updates = updates
     if self.updates:
       self.phrases = [
-        "I have some updates on stories you've been following. Would you like to hear them?",
-        "I have some stories I think you may be interested in. Would you like to hear them?"
+        "I have some updates on stories you've been following. Would you like to hear them%s?" % name_or_empty(name),
+        "I have some stories I think you may be interested in. Would you like to hear them%s?" % name_or_empty(name)
       ]
     else:
       self.phrases = [
-        "Would you like to hear about what's going on today?",
-        "Do you want me to tell you about today's headlines?",
-        "Want me to fill you in on today's news?"
+        "Would you like to hear about what's going on today%s?" % name_or_empty(name),
+        "Do you want me to tell you about today's headlines%s?" % name_or_empty(name),
+        "Want me to fill you in on today's news%s?" % name_or_empty(name)
       ]
 
   def get_phrase(self):
@@ -44,7 +47,7 @@ class UpdatesOrNoUpdates:
     return self.phrases[n]
 
 class FoundHeadlines:
-  def __init__(self, sentence_headlines, topic_headlines):
+  def __init__(self, sentence_headlines, topic_headlines, name):
     self.sentence_headlines = sentence_headlines
     self.topic_headlines = topic_headlines
     self.num_stories = len(self.sentence_headlines) + len(self.topic_headlines)
@@ -59,13 +62,13 @@ class FoundHeadlines:
         second_sentence = "I also have news about " + ", ".join(self.topic_headlines[:-1]) + ", and " + self.topic_headlines[-1] + "."
       else:
         second_sentence = "I also have news about " + topic_headlines[0] + "."
-    self.base_phrase = "I have %s stories for you." % self.num_stories + " " + first_sentence + " " + second_sentence
+    self.base_phrase = "I have %s stories for you:" % self.num_stories + " " + first_sentence + " " + second_sentence
     self.phrases = [
-      "Are any of these interesting to you?",
-      "Would you like to hear about any of these?",
-      "Do you want me to tell you more about any of these stories?",
-      "Do any of these interest you?",
-      "Let me know if any of these stories interest you!"
+      "Are any of these interesting to you%s?" % name_or_empty(name),
+      "Would you like to hear about any of these%s?" % name_or_empty(name),
+      "Do you want me to tell you more about any of these stories%s?" % name_or_empty(name),
+      "Do any of these interest you%s?" % name_or_empty(name),
+      "Let me know if any of these stories interest you%s?" % name_or_empty(name)
     ]
 
   def get_phrase(self):
@@ -86,7 +89,7 @@ class LoadingConfirmation:
     return self.phrases[n]
 
 class SaveConfirmation:
-  def __init__(self):
+  def __init__(self, name):
     self.phrases = [
       "Okay! I've saved this story for you to read later!",
       "I've saved the article to your Kindle so you can read it later.",
@@ -98,7 +101,7 @@ class SaveConfirmation:
     return self.phrases[n]
 
 class Media:
-  def __init__(self):
+  def __init__(self, name):
     self.phrases = [
       "Here are the photos for this story.",
       "Here are some images from this article",
@@ -110,7 +113,7 @@ class Media:
     return self.phrases[n]
     
 class Error:
-  def __init__(self):
+  def __init__(self, name):
     self.phrases = [
       "I'm sorry, but I didn't understand what you said. Would you mind repeating that?",
       "I didn't quite catch that. Could you say that again?",

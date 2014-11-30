@@ -17,6 +17,12 @@ class IntentHandler(tornado.web.RequestHandler):
             self._id = self.outcome["id"]
         else:
             self.error_response("No id passed in outcome")
+
+        if ("name" in self.outcome):
+            self.name = self.outcome["name"]
+        else:
+            self.name = None
+
         if (intent == "start"):
             self.start()
         elif (intent == "confirm_action"):
@@ -45,12 +51,15 @@ class IntentHandler(tornado.web.RequestHandler):
     def respond_start(self, articles):
         r = RedisClient()
         keywords = r.get(self._id + ":keywords")
-        keyword_articles = NYTimes.check_keywords(articles, keywords)
-        hasUpdate = len(keywords) > 0
 
-        if hasUpdate:
+        if keywords:
+            keyword_articles = NYTimes.check_keywords(articles, keywords)
+            hasUpdate = len(keywords) > 0
             articles = keyword_articles
-        start_state = UpdatesOrNoUpdates(hasUpdate)
+        else:
+            hasUpdate = False
+
+        start_state = UpdatesOrNoUpdates(hasUpdate, self.name)
         self.payload = {
             "read": start_state.get_phrase()
         }
@@ -69,14 +78,18 @@ class IntentHandler(tornado.web.RequestHandler):
             self.respond_get_headlines(articles)
 
     def get_headlines(self):
-        NYTimes.get_headlines(self.respond_get_headlines)
+        topic = None
+        if "entities" in self.outcome and\
+            "topic" in self.outcome["entities"] and\
+            "value" in self.outcome["entities"]["topic"][0]:
+                topic = self.outcome["entities"]["topic"][0]["value"]
+        NYTimes.get_headlines(self.respond_get_headlines, topic=topic)
+
 
     def respond_get_headlines(self, payload):
-
-
         sentence_headlines, topic_headlines = NLPParser.parse_headlines(map(lambda x: x["headline"], payload))
 
-        found = FoundHeadlines(sentence_headlines, topic_headlines)
+        found = FoundHeadlines(sentence_headlines, topic_headlines, self.name)
         self.payload = {
             "read": found.get_phrase()
         }
@@ -98,6 +111,8 @@ class IntentHandler(tornado.web.RequestHandler):
 
         r = RedisClient()
         articles = r.get(self._id + ":articles")
+        selected = r.get(self._id + ":selected")
+
         article = None
 
         entities = self.outcome["entities"]
@@ -117,25 +132,20 @@ class IntentHandler(tornado.web.RequestHandler):
                     if len(articles) >= i:
                         article = articles[i]
                         break
+        elif selected:
+            article = selected
         return article
 
-    @tornado.web.asynchronous
     def get_summary(self):
         article = self.extract_article()
         if article:
             r.set(self._id + ":currentArticle", article)
             self.payload = {
-                "read": article["abstract"] + ". Would you like me to send the full article to your kindle?"
+                "read": "%s. Would you like me to send the full article to your kindle?" % article["snippet"]
             }
             self.finish_response()
         else:
             self.error_response("Sorry I don't know what article you are talking about")
-
-    def respond_get_summary(self, summary):
-        self.payload = {
-            "read": summary
-        }
-        self.finish_response()
 
     def finish_response(self):
         self.payload["status"] = 200

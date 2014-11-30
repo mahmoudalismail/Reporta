@@ -5,7 +5,7 @@ import random
 
 class NYTimes():
     @staticmethod
-    def get_headlines(callback, topic=None, keywords=None):
+    def get_headlines(callback, topic=None):
         #if there is a topic, search about that topic
         # none topic is general headline using previous keywords used
         #else, newest headlines

@@ -9,7 +9,7 @@ class RedisClient(object):
 
     def get(self, key):
         value = RedisClient._instance.get(key)
-        if value[0] == "[" or value[0] == "{":
+        if value and (value[0] == "[" or value[0] == "{"):
             value = json.loads(value)
         return value
 

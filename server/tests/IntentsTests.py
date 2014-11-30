@@ -52,7 +52,9 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
                                                 body=tornado.escape.json_encode(mock_outcome))
         payload = tornado.escape.json_decode(response.body)
         self.assertEqual(payload["status"], 200)
-        self.assertTrue("aids" in payload["read"])
+        print(payload["read"])
+        self.assertTrue(len(payload["read"]) > 0)
+        self.assertTrue("?" in payload["read"])
 
     @tornado.testing.gen_test
     def get_headlines(self):
@@ -69,7 +71,31 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
                                                 body=tornado.escape.json_encode(mock_outcome))
         payload = tornado.escape.json_decode(response.body)
         self.assertEqual(payload["status"], 200)
-        self.assertTrue("aids" in payload["read"])
+        self.assertTrue(len(payload["read"]) > 0)
+        self.assertTrue("?" in payload["read"])
+
+    @tornado.testing.gen_test
+    def get_headlines_topic(self):
+        mock_outcome = {
+            "id": "sadflkja098wf3j2f",
+            "_text" : "Is there any news about pope?",
+            "intent" : "get_headlines",
+            "entities" : {
+              "topic" : [ {
+                "value" : "pope"
+              } ]
+            },
+            "confidence" : 0.855
+        }
+        response = yield self.http_client.fetch(self.get_url("/"),
+                                                method="POST",
+                                                headers=tornado.httputil.HTTPHeaders({"content-type": "application/json"}),
+                                                body=tornado.escape.json_encode(mock_outcome))
+        payload = tornado.escape.json_decode(response.body)
+        self.assertEqual(payload["status"], 200)
+        self.assertTrue(len(payload["read"]) > 0)
+        self.assertTrue("?" in payload["read"])
+        self.assertTrue("pope" in payload["read"].lower())
 
     #@tornado.testing.gen_test
     #def get_summary(self):
