@@ -5,29 +5,14 @@ import random
 
 class NYTimes():
     @staticmethod
-    @tornado.gen.coroutine
     def get_headlines(callback, topic=None, keywords=None):
         #if there is a topic, search about that topic
         # none topic is general headline using previous keywords used
         #else, newest headlines
-        payload = []
-        isUpdate = False
-
         if topic:
-            specific_articles = test_nyt_api.get_5_specific(topic)
-            if specific_articles:
-                for art in specific_articles:
-                    clean_art = test_nyt_api.clean_entry(art)
-                    payload.append(test_nyt_api.clean_entry(art))
-
+            test_nyt_api.get_articles(callback, topic = topic, limit = 5)
         else:
-            general_article = test_nyt_api.get_general()
-            if general_article:
-                for art in general_article:
-                    clean_art = test_nyt_api.clean_entry(art)
-                    payload.append(test_nyt_api.clean_entry(art))
-
-        callback(payload)
+            test_nyt_api.get_articles(callback, limit = 5)
 
     @staticmethod
     def check_keywords(articles, keywords):
@@ -40,3 +25,11 @@ class NYTimes():
                     break
         return accepted
 
+def cb(payload):
+    print payload
+
+def main():
+    NYTimes.get_headlines(cb, topic="Obama")
+
+if __name__ == "__main__":
+    main()

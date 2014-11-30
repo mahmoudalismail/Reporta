@@ -3,15 +3,17 @@ import unittest
 from RedisTests import RedisTests
 from EchoTests import EchoTests
 from IntentsTests import IntentsTests
+from NYTimesTests import NYTimesTests
 
 def all():
     suite = unittest.TestSuite()
-    suite.addTest(EchoTests("get"))
-    suite.addTest(EchoTests("post"))
+    #suite.addTest(EchoTests("get"))
+    #suite.addTest(EchoTests("post"))
     suite.addTest(RedisTests("set_and_get"))
-    suite.addTest(IntentsTests("start"))
-    suite.addTest(IntentsTests("confirm_action"))
-    suite.addTest(IntentsTests("get_headlines"))
+    suite.addTest(NYTimesTests("get_headlines"))
+    #suite.addTest(IntentsTests("start"))
+    #suite.addTest(IntentsTests("confirm_action"))
+    #suite.addTest(IntentsTests("get_headlines"))
     return suite
 
 def main():

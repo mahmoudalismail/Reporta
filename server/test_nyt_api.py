@@ -1,26 +1,8 @@
 from nytimesarticle import articleAPI
-import datetime 
+import datetime
 import time
 
 api = articleAPI('ae14e1d2f3c40ad244abceddb249d691:17:65860898')
-
-def get_articles(topic=None,startdate=None, enddate=None, page=0, limit=1):
-	good_articles = []
-	
-	for i in range(20):
-		if not startdate and not enddate:
-			query = api.search( q = topic , page = page+i, sort='newest')
-		elif not topic:
-			query = api.search(sort='newest')
-			print query
-		else:
-			query = api.search( q = topic, page = page+i, sort='newest', begin_date=startdate, end_date=enddate)#, fl={document_type:'article'})
-		for art in query['response']['docs']:
-			if art['keywords'] and (art['snippet'] or art['abstract']) and art['multimedia'] and art['type_of_material']=='News':
-				good_articles.append(art)
-			if len(good_articles)>=limit:
-				return good_articles
-	return good_articles
 
 def clean_entry(art):
 	clean = {}
@@ -40,21 +22,32 @@ def clean_entry(art):
 	#clean['section_name'] = art['section_name']
 	clean['headline'] = art ['headline']['main'].encode('ascii', 'ignore')
 	#clean['_id'] = art['_id']
-
 	return clean
 
-def get_5_specific(keyword):
+def get_articles(cb, so_far=[], topic=None,startdate=None, enddate=None, page=0, limit=5):
+        def respond_get_articles(payload):
+                print 2
+                good_articles = []
+                for art in payload['response']['docs']:
+                        if art['keywords'] and (art['snippet'] or art['abstract']) and art['multimedia'] and art['type_of_material']=='News':
+                                good_articles.append(clean_entry(art))
+                        good_articles += so_far
+                        print "========="
+                        print len(good_articles)
+                        print "========="
+                        if len(good_articles) >= limit:
+                                print 5
+                                cb(good_articles)
+                        else:
+                                print 6
+                                get_articles(cb, so_far=good_articles, topic=topic, startdate=startdate,
+                                            enddate=enddate, page=(page+1), limit=limit)
 
-	articles = get_articles(topic = keyword, limit = 5)
-	# if articles:
-	# 	for a in articles:
-	# 		add_recent_article(keyword, a)
 
-	return articles
-
-def get_general():
-	articles = get_articles(limit = 15)
-
-	return articles
-
-
+        print 1
+        if not startdate and not enddate:
+                api.search(respond_get_articles, q = topic , page = page, sort='newest')
+        elif not topic:
+                api.search(respond_get_articles, sort='newest')
+        else:
+                api.search(respond_get_articles, q = topic, page = page, sort='newest', begin_date=startdate, end_date=enddate)#, fl={document_type:'article'})

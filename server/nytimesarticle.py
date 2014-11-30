@@ -90,6 +90,7 @@ class articleAPI(object):
         
         return values
 
+    @tornado.gen.coroutine
     def search(self, callback,
                 response_format = None, 
                 key = None, 
@@ -113,7 +114,6 @@ class articleAPI(object):
             API_ROOT, response_format, self._options(**kwargs), key
         )
         
-        r = requests.get(url)
         client = tornado.httpclient.AsyncHTTPClient()
         response = yield client.fetch(url)
         payload = tornado.escape.json_decode(response.body)
