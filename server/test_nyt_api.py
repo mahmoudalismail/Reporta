@@ -77,7 +77,8 @@ def get_articles(topic="",startdate=None, enddate=None, page=0, limit=1):
 		else:
 			query = api.search( q = topic, page = page+i, sort='newest', begin_date=startdate, end_date=enddate)#, fl={document_type:'article'})
 		for art in query['response']['docs']:
-			if art['keywords'] and art['multimedia'] and art['abstract'] and art['snippet'] and art['abstract'] != art['snippet'] and not isAlreadyFound(art) and art['type_of_material']=='News':
+			# if art['keywords'] and art['multimedia'] and art['abstract'] and art['snippet'] and art['abstract'] != art['snippet'] and not isAlreadyFound(art) and art['type_of_material']=='News':
+			if art['snippet'] and art['abstract'] != art['snippet'] and not isAlreadyFound(art) and art['type_of_material']=='News':
 				good_articles.append(art)
 			if len(good_articles)>=limit:
 				return good_articles
@@ -120,22 +121,25 @@ def clean_entry(art):
 
 	return clean
 
-def get_5_personal(keywords):
-	#replace with personal list of keywords
+# def get_5_personal(keywords):
+# 	# #replace with personal list of keywords
 	
-	week_articles = []
+# 	# week_articles = []
 
-	for keyword in keywords:
-		articles = get_articles(topic=keyword)
-		if articles:
-			week_articles=week_articles+articles
-			# for a in articles:
-			# 	add_recent_article(keyword, a)
+# 	# articles = get_articles(topic = keyword, limit = 5)
+# 	# for keyword in keywords:
+# 	# 	articles = get_articles(topic=keyword)
+# 	# 	if articles:
+# 	# 		week_articles=week_articles+articles
+# 	# 		# for a in articles:
+# 	# 		# 	add_recent_article(keyword, a)
 
-	return week_articles
+# 	week_articles = get_articles(topic = keyword, limit = 10)
+# 	return week_articles
 
 
 def get_5_specific(keyword):
+
 	articles = get_articles(topic = keyword, limit = 5)
 	# if articles:
 	# 	for a in articles:

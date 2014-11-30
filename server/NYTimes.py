@@ -31,23 +31,23 @@ class NYTimes():
 
     def test(self):
         payload = []
-        topic = 'Ferguson'
+        topic = ''
         if topic:
             specific_articles = test_nyt_api.get_5_specific(topic)
             if specific_articles:
                 for art in specific_articles:
                     clean_art = test_nyt_api.clean_entry(art)
-                    self.recent_article_tuples.append((topic,clean_art))
+                    # self.recent_article_tuples.append((topic,clean_art))
                     payload.append(test_nyt_api.clean_entry(art))
 
-        else:
-            keywords = self.get_personal_keywords()
-            personal_articles = test_nyt_api.get_5_personal(keywords)
-            if personal_articles:
-                for art in personal_articles:
-                    clean_art = test_nyt_api.clean_entry(art)
-                    self.recent_article_tuples.append((topic,clean_art))
-                    payload.append(test_nyt_api.clean_entry(art))
+        # else:
+        #     keywords = ['Ferguson','Obama','Water']#[self.get_personal_keywords()]
+        #     personal_articles = test_nyt_api.get_5_personal(keywords)
+        #     if personal_articles:
+        #         for art in personal_articles:
+        #             clean_art = test_nyt_api.clean_entry(art)
+        #             # self.recent_article_tuples.append((topic,clean_art))
+        #             payload.append(test_nyt_api.clean_entry(art))
         print payload
 
     @staticmethod
@@ -59,19 +59,21 @@ class NYTimes():
         if topic:
             specific_articles = test_nyt_api.get_5_specific(topic)
             if specific_articles:
+                print len(specific_articles)
                 for art in specific_articles:
                     clean_art = test_nyt_api.clean_entry(art) 
-                    self.recent_article_tuples.append((topic,clean_art))
+                    # self.recent_article_tuples.append((topic,clean_art))
                     payload.append(test_nyt_api.clean_entry(art))
 
-        else:
-            keywords = get_personal_keywords()
-            personal_articles = test_nyt_api.get_5_personal(keywords)
-            if personal_articles:
-                for art in personal_articles:
-                    clean_art = test_nyt_api.clean_entry(art) 
-                    self.recent_article_tuples.append((topic,clean_art))
-                    payload.append(test_nyt_api.clean_entry(art))
+        print payload
+        # else:
+        #     keywords = get_personal_keywords()
+        #     personal_articles = test_nyt_api.get_5_personal(keywords)
+        #     if personal_articles:
+        #         for art in personal_articles:
+        #             clean_art = test_nyt_api.clean_entry(art) 
+        #             self.recent_article_tuples.append((topic,clean_art))
+        #             payload.append(test_nyt_api.clean_entry(art))
 
 
         client = tornado.httpclient.AsyncHTTPClient()
@@ -100,17 +102,17 @@ class NYTimes():
         payload = "John is a good man"
         callback(payload)
 
+def callback(payload):
+    print payload
 
-# def main():
+def main():
 
-#     times = NYTimes()
-#     keywords = times.get_personal_keywords()
-#     times.test()
+    NYTimes.get_headlines(callback,topic='Russia')
 
 
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()
 
 
 
