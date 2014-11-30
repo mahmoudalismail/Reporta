@@ -22,15 +22,15 @@ class Greeting:
     return self.phrases
   def get_phrase(self):
     n = random.randrange(len(self.phrases))
-    return self.phrases[n]  
-  
+    return self.phrases[n]
+
 class UpdatesOrNoUpdates:
   def __init__(self, updates=False):
     self.updates = updates
     if self.updates:
       self.phrases = [
         "I have some updates on stories you've been following. Would you like to hear them?",
-        "I have some stories you may be interested in. Would you like to hear them?"
+        "I have some stories I think you may be interested in. Would you like to hear them?"
       ]
     else:
       self.phrases = [
@@ -38,11 +38,11 @@ class UpdatesOrNoUpdates:
         "Do you want me to tell you about today's headlines?",
         "Want me to fill you in on today's news?"
       ]
-      
+
   def get_phrase(self):
     n = random.randrange(len(self.phrases))
     return self.phrases[n]
-  
+
 class FoundHeadlines:
   def __init__(self, sentence_headlines, topic_headlines):
     self.sentence_headlines = sentence_headlines
@@ -67,11 +67,11 @@ class FoundHeadlines:
       "Do any of these interest you?",
       "Let me know if any of these stories interest you!"
     ]
-    
+
   def get_phrase(self):
     n = random.randrange(len(self.phrases))
-    return self.base_phrase + " " + self.phrases[n]  
-  
+    return self.base_phrase + " " + self.phrases[n]
+
 class LoadingConfirmation:
   def __init__(self, user_input=None):
     self.user_input = user_input
@@ -80,11 +80,11 @@ class LoadingConfirmation:
     ]
     subject = "some stories about %s" % self.user_input if self.user_input else "today's top stories"
     self.phrases.append("Okay! I will find you %s" % subject)
-    
+
   def get_phrase(self):
     n = random.randrange(len(self.phrases))
     return self.phrases[n]
-  
+
 class SaveConfirmation:
   def __init__(self):
     self.phrases = [
@@ -92,11 +92,11 @@ class SaveConfirmation:
       "I've saved the article to your Kindle so you can read it later.",
       "All done! When you have time, you can read this story on your Kindle."
     ]
-    
+
   def get_phrase(self):
     n = random.randrange(len(self.phrases))
     return self.phrases[n]
-  
+
 class Media:
   def __init__(self):
     self.phrases = [

@@ -18,6 +18,8 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
         mock_outcome = {
             "id": "absc0sasdadsaf",
             "intent" : "start",
+            "user": "Hey Reporta",
+            "reporta": "Hi John. How are you today?"
         }
         response = yield self.http_client.fetch(self.get_url("/"),
                                                 method="POST",

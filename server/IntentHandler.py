@@ -26,9 +26,9 @@ class IntentHandler(tornado.web.RequestHandler):
         elif (intent == "get_summary"):
             self.get_summary()
         elif (intent == "get_media"):
-            pass
+            self.get_media()
         elif (intent == "save_headline"):
-            pass
+            self.save_headline()
         else:
             self.error_response("No recognizable intent found")
 
@@ -42,19 +42,26 @@ class IntentHandler(tornado.web.RequestHandler):
 
         NYTimes.get_headlines(self.respond_start)
 
-    def respond_start(self, payload):
-        start_state = UpdatesOrNoUpdates()
+    def respond_start(self, articles):
+        r = RedisClient()
+        keywords = r.get(self._id + ":keywords")
+        keyword_articles = NYTimes.check_keywords(articles, keywords)
+        hasUpdate = len(keywords) > 0
+
+        if hasUpdate:
+            articles = keyword_articles
+        start_state = UpdatesOrNoUpdates(hasUpdate)
         self.payload = {
             "read": start_state.get_phrase()
         }
-        r = RedisClient()
-        r.set(self._id + ":articles", payload)
+        r.set(self._id + ":articles", articles)
         r.set(self._id + ":state", "start")
         self.finish_response()
 
     def confirm_action(self):
         r = RedisClient()
         current_state = r.get(self._id + ":state")
+
         if (current_state != "start"):
             self.error_response("Sorry, what are you saying okay for?")
         else:
@@ -66,10 +73,12 @@ class IntentHandler(tornado.web.RequestHandler):
 
     def respond_get_headlines(self, payload):
         sentence_headlines, topic_headlines = NLPParser.parse_headlines(map(lambda x: x["headline"], payload))
+
         found = FoundHeadlines(sentence_headlines, topic_headlines)
         self.payload = {
             "read": found.get_phrase()
         }
+
         r = RedisClient()
 
         # State transition
@@ -112,7 +121,7 @@ class IntentHandler(tornado.web.RequestHandler):
         if article:
             r.set(self._id + ":currentArticle", article)
             self.payload = {
-                "read": article["abstract"]
+                "read": article["abstract"] + ". Would you like me to send the full article to your kindle?"
             }
             self.finish_response()
         else:
