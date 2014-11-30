@@ -47,8 +47,11 @@ class FoundHeadlines:
     self.sentence_headlines = sentence_headlines
     self.topic_headlines = topic_headlines
     self.num_stories = len(self.sentence_headlines) + len(self.topic_headlines)
-    first_sentence = ", ".join(self.sentence_headlines[:-1]) + ", and " + self.sentence_headlines[-1] + "."
-    second_sentence = "I also have news about " + ", ".join(self.topic_headlines[:-1]) + ", and " + self.topic_headlines[-1] + "."
+    first_sentence, second_sentence = '',''
+    if self.sentence_headlines:
+      first_sentence = ", ".join(self.sentence_headlines[:-1]) + ", and " + self.sentence_headlines[-1] + "."
+    if self.topic_headlines:
+      second_sentence = "I also have news about " + ", ".join(self.topic_headlines[:-1]) + ", and " + self.topic_headlines[-1] + "."
     self.base_phrase = "I have %s stories for you." % self.num_stories + " " + first_sentence + " " + second_sentence
     self.phrases = [
       "Are any of these interesting to you?",

@@ -21,19 +21,6 @@ t1 = nltk.UnigramTagger(train_sents, backoff=t0)
 t2 = nltk.BigramTagger(train_sents, backoff=t1)
 t3 = nltk.TrigramTagger(train_sents, backoff=t2)
 
-_HEADLINE_PHRASES = [
-  '. Do you want to hear more?',
-  '. Would you like me to tell you more?',
-  '. Shall I tell you more?'
-]
-
-_SUBJECT_PHRASES = [
-  'Are you interested in ',
-  'Do you want to hear about ',
-  'Would you like to find out more about ',
-  'Do you want me to tell you about '
-]
-
 def simple_headline(headline):
   match_obj = re.match(r'(.*)\: (.*)', headline)
   if match_obj:
@@ -89,12 +76,14 @@ def check_headline(headline):
         return simple_headline(headline), 'sentence'
     return simple_headline(headline), 'topic'
         
-def conversational_headline(headline):
-  headline, result_type = check_headline(headline)
-  if result_type == 'sentence':
-    phrase = random.randrange(len(_HEADLINE_PHRASES) - 1)
-    return headline.strip() + _HEADLINE_PHRASES[phrase]
-  else:
-    phrase = random.randrange(len(_SUBJECT_PHRASES) - 1)
-    return _SUBJECT_PHRASES[phrase] + headline + '?'
+def parse_headlines(payload):
+  sentence_headlines = []
+  topic_headlines = []
+  for item in payload:
+    headline, headline_type = check_headline(item)
+    if headline_type == 'sentence':
+      sentence_headlines.append(headline)
+    else:
+      topic_headlines.append(headline)
+  return sentence_headlines, topic_headlines
     
