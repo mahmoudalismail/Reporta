@@ -10,9 +10,8 @@ def clean_entry(art):
 		clean['snippet'] = art['abstract'].encode('ascii', 'ignore')
 	else:
 		clean['snippet'] = art['snippet'].encode('ascii', 'ignore')
-	# clean['web_url'] = art['web_url']
 	# clean['abstract'] = art['abstract']
-	clean['multimedia'] = art['multimedia']
+	clean['multimedia'] = "http://www.nytimes.com/"+str(art['multimedia'][1]['url'])
 	clean['keywords'] = []
 	for word in art['keywords']:
 		clean['keywords'].append(word['value'].encode('ascii', 'ignore'))
