@@ -24,10 +24,6 @@ class NYTimes():
             keywords.append(spare_keywords[i])
         return keywords
 
-    def make_friendly_payload(payload):
-        # use NFL
-        return new_payload
-
 
     def test(self):
         payload = []
@@ -56,7 +52,9 @@ class NYTimes():
         #if there is a topic, search about that topic
         #none topic is general headline using previous keywords used
         payload = []
+        isUpdate = False
         if topic:
+
             specific_articles = test_nyt_api.get_5_specific(topic)
             if specific_articles:
                 print len(specific_articles)
@@ -67,6 +65,7 @@ class NYTimes():
 
         print payload
         # else:
+        #     isUpdate = True
         #     keywords = get_personal_keywords()
         #     personal_articles = test_nyt_api.get_5_personal(keywords)
         #     if personal_articles:
@@ -92,7 +91,8 @@ class NYTimes():
         #     {'type_of_material': u'News', 'headline': u'Grateful for What\u2019s Left, Not Mourning What\u2019s Lost', 'abstract': u'Catholic Charities Brooklyn and Queens, one of seven agencies supported by The New York Times Neediest Cases Fund, has helped Anna Maria Walsh of Brooklyn to pay for filing Certificate of Citizenship form and for replacement for her washer and dryer.', 'multimedia': [{u'subtype': u'wide', u'url': u'images/2014/11/28/nyregion/NEEDIEST/NEEDIEST-thumbWide.jpg', u'height': 126, u'width': 190, u'legacy': {u'wide': u'images/2014/11/28/nyregion/NEEDIEST/NEEDIEST-thumbWide.jpg', u'wideheight': u'126', u'widewidth': u'190'}, u'type': u'image'}, {u'subtype': u'xlarge', u'url': u'images/2014/11/28/nyregion/NEEDIEST/NEEDIEST-articleLarge.jpg', u'height': 400, u'width': 600, u'legacy': {u'xlargewidth': u'600', u'xlarge': u'images/2014/11/28/nyregion/NEEDIEST/NEEDIEST-articleLarge.jpg', u'xlargeheight': u'400'}, u'type': u'image'}, {u'subtype': u'thumbnail', u'url': u'images/2014/11/28/nyregion/NEEDIEST/NEEDIEST-thumbStandard.jpg', u'height': 75, u'width': 75, u'legacy': {u'thumbnailheight': u'75', u'thumbnail': u'images/2014/11/28/nyregion/NEEDIEST/NEEDIEST-thumbStandard.jpg', u'thumbnailwidth': u'75'}, u'type': u'image'}], 'snippet': u'Anna Maria Walsh has numerous health problems, but her resiliency has led her to win nomination to a Brooklyn community board and to work to help others with disabilities.', 'web_url': u'http://www.nytimes.com/2014/11/28/nyregion/grateful-for-what-remains.html', 'section_name': u'N.Y. / Region', 'keywords': [u'New York Times Neediest Cases Fund', u'Catholic Charities', u'Philanthropy'], 'pub_date': u'20141128'},
         #     {'type_of_material': u'News', 'headline': u'Eagles Come Out Strong Against Cowboys and Take Division Lead', 'abstract': u'Philadelphia Eagles improve to 9-3 and assume control of NFC East with 33-10 win over Dallas Cowboys.', 'multimedia': [{u'subtype': u'wide', u'url': u'images/2014/11/28/sports/Y-COWBOYS/Y-COWBOYS-thumbWide.jpg', u'height': 126, u'width': 190, u'legacy': {u'wide': u'images/2014/11/28/sports/Y-COWBOYS/Y-COWBOYS-thumbWide.jpg', u'wideheight': u'126', u'widewidth': u'190'}, u'type': u'image'}, {u'subtype': u'xlarge', u'url': u'images/2014/11/28/sports/Y-COWBOYS/Y-COWBOYS-articleLarge.jpg', u'height': 425, u'width': 600, u'legacy': {u'xlargewidth': u'600', u'xlarge': u'images/2014/11/28/sports/Y-COWBOYS/Y-COWBOYS-articleLarge.jpg', u'xlargeheight': u'425'}, u'type': u'image'}, {u'subtype': u'thumbnail', u'url': u'images/2014/11/28/sports/Y-COWBOYS/Y-COWBOYS-thumbStandard.jpg', u'height': 75, u'width': 75, u'legacy': {u'thumbnailheight': u'75', u'thumbnail': u'images/2014/11/28/sports/Y-COWBOYS/Y-COWBOYS-thumbStandard.jpg', u'thumbnailwidth': u'75'}, u'type': u'image'}], 'snippet': u'Mark Sanchez, who was 20 of 29 passing for 217 yards, led Philadelphia in a rout of N.F.C. East rival Dallas.', 'web_url': u'http://www.nytimes.com/2014/11/28/sports/football/philadelphia-eagles-come-out-strong-against-dallas-cowboys-and-walk-off-with-division-lead.html', 'section_name': u'Sports', 'keywords': [u'Football', u'National Football League', u'Sanchez, Mark', u'Romo, Tony', u'Philadelphia Eagles', u'Dallas Cowboys'], 'pub_date': u'20141128'}
         # ]
-        callback(payload)
+        callback(payload,isUpdate)
+
 
     @staticmethod
     @tornado.gen.coroutine
@@ -102,17 +102,16 @@ class NYTimes():
         payload = "John is a good man"
         callback(payload)
 
+# here on are test methods
+
 def callback(payload):
     print payload
 
 def main():
 
-    NYTimes.get_headlines(callback,topic='Russia')
-
+    NYTimes.get_headlines(callback,topic='Obama')
 
 
 if __name__ == "__main__":
     main()
-
-
 

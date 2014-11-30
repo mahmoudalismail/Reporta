@@ -78,37 +78,41 @@ def get_articles(topic="",startdate=None, enddate=None, page=0, limit=1):
 			query = api.search( q = topic, page = page+i, sort='newest', begin_date=startdate, end_date=enddate)#, fl={document_type:'article'})
 		for art in query['response']['docs']:
 			# if art['keywords'] and art['multimedia'] and art['abstract'] and art['snippet'] and art['abstract'] != art['snippet'] and not isAlreadyFound(art) and art['type_of_material']=='News':
-			if art['snippet'] and art['abstract'] != art['snippet'] and not isAlreadyFound(art) and art['type_of_material']=='News':
+			if (art['snippet'] or art['abstract']) and art['multimedia'] and art['type_of_material']=='News':
 				good_articles.append(art)
 			if len(good_articles)>=limit:
 				return good_articles
 	return good_articles
 
 
-def new_print(art):
-	clean = {}
-	clean['snippet'] = art['snippet']
-	clean['web_url'] = art['web_url']
-	clean['abstract'] = art['abstract']
-	clean['multimedia'] = art['multimedia']
-	clean['keywords'] = []
-	for word in art['keywords']:
-		clean['keywords'].append(word['value'])
-	#change to just key words to list of just terms
-	clean['pub_date'] = art['pub_date'][:10].replace("-",'')
-	clean['type_of_material'] = art['type_of_material']
-	clean['section_name'] = art['section_name']
-	clean['headline'] = art ['headline']['main']
-	clean['_id'] = art['_id']
+# def new_print(art):
+# 	clean = {}
+# 	clean['snippet'] = art['snippet']
+# 	clean['web_url'] = art['web_url']
+# 	clean['abstract'] = art['abstract']
+# 	clean['multimedia'] = art['multimedia']
+# 	clean['keywords'] = []
+# 	for word in art['keywords']:
+# 		clean['keywords'].append(word['value'])
+# 	#change to just key words to list of just terms
+# 	clean['pub_date'] = art['pub_date'][:10].replace("-",'')
+# 	clean['type_of_material'] = art['type_of_material']
+# 	clean['section_name'] = art['section_name']
+# 	clean['headline'] = art ['headline']['main']
+# 	clean['_id'] = art['_id']
 
-	print clean
+# 	print clean
 
 def clean_entry(art):
 	clean = {}
-	clean['snippet'] = art['snippet']
+	if art['snippet']:
+
+		clean['snippet'] = art['snippet']
+	else:
+		clean['snippet'] = art['abstract']
 	# clean['web_url'] = art['web_url']
-	clean['abstract'] = art['abstract']
-	# clean['multimedia'] = art['multimedia']
+	# clean['abstract'] = art['abstract']
+	#clean['multimedia'] = art['multimedia']
 	# clean['keywords'] = []
 	# for word in art['keywords']:
 	# 	clean['keywords'].append(word['value'])
