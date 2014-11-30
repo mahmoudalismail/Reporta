@@ -11,6 +11,7 @@ def clean_entry(art):
 	else:
 		clean['snippet'] = art['snippet'].encode('ascii', 'ignore')
 	# clean['abstract'] = art['abstract']
+	clear['url'] = art['web_url']
 	clean['multimedia'] = "http://www.nytimes.com/"+str(art['multimedia'][1]['url'])
 	clean['keywords'] = []
 	for word in art['keywords']:
