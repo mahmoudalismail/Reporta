@@ -76,7 +76,7 @@ def get_articles(topic="",startdate=None, enddate=None, page=0, limit=1):
 		else:
 			query = api.search( q = topic, page = page+i, sort='newest', begin_date=startdate, end_date=enddate)#, fl={document_type:'article'})
 		for art in query['response']['docs']:
-			if art['keywords'] and art['multimedia'] and art['abstract'] and art['snippet'] and art['abstract'] != art['snippet'] and not isAlreadyFound(art):
+			if art['keywords'] and art['multimedia'] and art['abstract'] and art['snippet'] and art['abstract'] != art['snippet'] and not isAlreadyFound(art) and art['type_of_material']=='News':
 				good_articles.append(art)
 			if len(good_articles)>=limit:
 				return good_articles
@@ -144,30 +144,30 @@ def get_5_specific(keyword):
 
 
 
-def main():
-	recent_articles = []
+# def main():
+# 	recent_articles = []
 
-	saved_articles = []
+# 	saved_articles = []
 
-	keywords = ['Ferguson','Healthcare']
+# 	keywords = ['Ferguson','Healthcare']
 
-	# personal = get_5_personal()
-	# for k in personal:
-	# 	new_print(k)
-	# print("\n"*(10))
+# 	# personal = get_5_personal()
+# 	# for k in personal:
+# 	# 	new_print(k)
+# 	# print("\n"*(10))
 
 
-	specific = get_5_specific("Russia")
-	for s in specific:
-		new_print(s)
+# 	specific = get_5_specific("Russia")
+# 	for s in specific:
+# 		new_print(s)
 
 
 	
 	
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
 
 	
 
