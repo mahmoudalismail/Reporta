@@ -100,6 +100,27 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
     def get_summary(self):
         mock_outcome = {
             "id": "safdsafsdf",
+            "_text" : "Tell me more about the third one",
+            "intent" : "get_summary",
+            "entities" : {
+              "ordinal" : [ {
+                "value" : 3
+              } ],
+              "topic" : [ {
+                "value" : "one"
+              } ]
+            },
+            "confidence" : 1.0
+        }
+        response = yield self.http_client.fetch(self.get_url("/"),
+                                                method="POST",
+                                                headers=tornado.httputil.HTTPHeaders({"content-type": "application/json"}),
+                                                body=tornado.escape.json_encode(mock_outcome))
+        payload = tornado.escape.json_decode(response.body)
+        self.assertEqual(payload["status"], 500)
+        self.assertTrue(len(payload["reason"]) > 0)
+        mock_outcome = {
+            "id": "safdsafsdf",
             "_text" : "Is there any news about the pope?",
             "intent" : "get_headlines",
             "entities" : {
