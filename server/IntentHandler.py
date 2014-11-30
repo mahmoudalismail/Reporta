@@ -22,29 +22,38 @@ class IntentHandler(tornado.web.RequestHandler):
             self.get_headlines()
         elif (intent == "get_summary"):
             self.get_summary()
-        elif (intent == ""):
-            self.get()
+        elif (intent == "get_media"):
+            pass
+        elif (intent == "save_headline"):
+            pass
         else:
             self.error_response("No recognizable intent found")
 
     def start(self):
-        NYT.get_headlines()
+        NYT.get_headlines(self.respond_start)
         r = RedisClient()
 
         # Clear the state for this new user
-        r.set(self._id + ":state", "start")
+        r.set(self._id + ":state", None)
         r.set(self._id + ":articles", None)
         r.set(self._id + ":selected", None)
 
     def respond_start(self, payload):
-        r.set(self._id + ":articles", payload)
         self.payload = {
             read: "I have 5 updates on stories you're following. Would you like to hear them?"
         }
+        r.set(self._id + ":articles", payload)
+        r.set(self._id + ":state", "start")
         self.finish_response()
 
     def confirm(self):
-        pass
+        r = RedisClient()
+        current_state = r.get(self._id + ":state")
+        if (current_state != "start"):
+            self.error_response("Sorry, what are you saying okay for?")
+        else:
+            articles = r.get(self._id + ":articles")
+            respond_get_headlines(articles)
 
     def get_headlines(self):
         NYTimes.get_headlines(self.respond_get_headlines)
@@ -54,7 +63,11 @@ class IntentHandler(tornado.web.RequestHandler):
             "read": "Your articles today are: %s" % payload[0]
         }
         r = RedisClient()
-        r.set(self._id + ":" + "articles", payload)
+
+        # State transition
+        r.set(self._id + ":selected", None)
+        r.set(self._id + ":articles", payload)
+        r.set(self._id + ":state", "headlines")
         self.finish_response()
 
     @tornado.web.asynchronous
