@@ -12,6 +12,7 @@ class IntentHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     def post(self):
         self.payload = {}
+        self.pushlater = []
         self.outcome = tornado.escape.json_decode(self.request.body)
         intent = self.outcome["intent"]
         if ("id" in self.outcome):
@@ -93,7 +94,9 @@ class IntentHandler(tornado.web.RequestHandler):
 
     def respond_get_headlines(self, payload):
         sentence_headlines, topic_headlines, article_order = NLPParser.parse_headlines(map(lambda x: x["headline"], payload))
-
+        for article in payload:
+          obj = {"type": "article", "value": {"headline": article["headline"], "url": article["url"], "snippet": article["snippet"]}}
+          self.pushlater.append(obj)
         found = FoundHeadlines(sentence_headlines, topic_headlines, self.name)
         self.payload = {
             "read": found.get_phrase()
@@ -161,9 +164,12 @@ class IntentHandler(tornado.web.RequestHandler):
         if article:
             if article['multimedia']:
                 r.set(self._id + ":selected", article)
+  
+                have_media = Media()
                 self.payload = {
-                    "read": "%s" % article['multimedia'] # usable url for html
+                    "read": media.get_phrase() # usable url for html
                 }
+                self.pushlater = {"type": "media", "value": article['multimedia']}
                 self.finish_response()
             else:
                 self.error_response("Sorry I don't have images for that article")
@@ -178,6 +184,9 @@ class IntentHandler(tornado.web.RequestHandler):
         if "_text" in self.outcome:
             result = f.post(self._id, {"type": "user", "value": self.outcome["_text"]})
         result = f.post(self._id, {"type": "reporta", "value": self.payload["read"]})
+        if self.pushlater:
+          f.post(self._id, self.push_later)
+          self.pushlater = []
         self.finish()
 
     def error_response(self, reason):
