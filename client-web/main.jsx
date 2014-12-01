@@ -2,6 +2,12 @@ var cx = React.addons.classSet;
 var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 var Reporta = Reporta || undefined;
 
+if (Reporta) {
+  Reporta.setAuth("yea");
+} else {
+  alert("No reporta");
+}
+
 var canSynthesizeSpeech = ('speechSynthesis' in window);
 
 var tts = function(text) {
