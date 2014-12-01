@@ -149,7 +149,7 @@ class IntentHandler(tornado.web.RequestHandler):
                         if (article_candidate["headline"] == result[0]):
                             article = article_candidate
                             break
-        if not article and selected:
+        if not article and selected and selected != "None":
             article = selected
         return article
 

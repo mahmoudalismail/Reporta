@@ -1,6 +1,6 @@
 var cx = React.addons.classSet;
 var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
-var Reporta = Reporta || undefined;
+var hasReporta = window.Reporta !== undefined;
 
 var canSynthesizeSpeech = ('speechSynthesis' in window);
 
@@ -11,7 +11,7 @@ var tts = function(text) {
     console.log("native");
     var msg = new SpeechSynthesisUtterance(text);
     window.speechSynthesis.speak(msg);
-  } else if (Reporta) {
+  } else if (hasReporta) {
     Reporta.speak(text);
   }
 };
@@ -22,7 +22,7 @@ var App = React.createClass({
       tts("Hi, My name is Reporta.");
     } else {
       tts("Good to see you again " + localStorage.name);
-      if (Reporta) { 
+      if (hasReporta) { 
         Reporta.setauth(localStorage.id);
       }
     }
@@ -223,7 +223,7 @@ var Login = React.createClass({
             id: localStorage.id,
             name: localStorage.name
           });
-          if (Reporta) { 
+          if (hasReporta) { 
             Reporta.setauth(localStorage.id);
           }
         } else {
@@ -258,7 +258,7 @@ var Login = React.createClass({
             id: localStorage.id,
             name: localStorage.name
           });
-          if (Reporta) { 
+          if (hasReporta) { 
             Reporta.setauth(localStorage.id);
           }
         } else {
