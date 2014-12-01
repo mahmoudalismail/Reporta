@@ -11,6 +11,7 @@ class QueryHandler(tornado.web.RequestHandler):
     self.query = data["query"]
     self.id = data["id"]
     client = tornado.httpclient.AsyncHTTPClient()
+    print "Sending to wit"
     response = client.fetch('https://api.wit.ai/message?v=20141129&q=' + tornado.escape.url_escape(self.query),
                             headers=tornado.httputil.HTTPHeaders({
                                 "Authorization": "Bearer B3HHZMAR6LHITBHGW4MHDAAMBRREGCIN"
@@ -21,9 +22,12 @@ class QueryHandler(tornado.web.RequestHandler):
     data = tornado.escape.json_decode(response.body)
     payload = data["outcomes"][0]
     payload["id"] = self.id
+    print "Sending noe"
+    print tornado.escape.json_encode(payload)
     client = tornado.httpclient.AsyncHTTPClient()
     r = requests.post("http://104.131.102.192/api",
                       data=tornado.escape.json_encode(payload), headers={'content-type': 'application/json'})
+    print r
     self.write(tornado.escape.json_encode({"status": 200}))
     self.finish()
 
