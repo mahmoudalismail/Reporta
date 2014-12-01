@@ -3,6 +3,8 @@ import pickle
 import random
 import re
 
+from HTMLParser import HTMLParser
+
 import nltk
 from nltk.corpus import brown
 
@@ -43,6 +45,7 @@ class NLPParser:
 
   @staticmethod
   def check_headline(headline):
+    headline = HTMLParser().unescape(headline)
     headline = headline.lower()
     tokens = nltk.word_tokenize(headline)
     tagged = NLPParser.t3.tag(tokens)
