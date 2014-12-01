@@ -9,7 +9,7 @@ var tts = function(text) {
   if (canSynthesizeSpeech) {
     var msg = new SpeechSynthesisUtterance(text);
     window.speechSynthesis.speak(msg);
-  } else {
+  } else if (Reporta) {
     Reporta.speak(text);
   }
 };
@@ -140,19 +140,34 @@ var Speech = React.createClass({
 
 var Article = React.createClass({
   render: function() {
-    var articles = _.map(this.props.articles, function(article) {
-      return (
-        <h2>
+    var articleNode = null;
+    if (this.props.articles.length > 1) {
+      articleNode = _.map(this.props.articles, function(article) {
+        return (
+          <h2>
+              <a href={article.url}>
+                {article.headline}
+              </a>
+              <hr />
+          </h2>
+        );
+      });
+    } else if (this.props.articles.length == 1) {
+      articleNode = (
+        <div>
+          <h2>
             <a href={article.url}>
               {article.headline}
             </a>
             <hr />
-        </h2>
+          </h2>
+          {article.snippet}
+        </div>
       );
-    });
+    }
     return (
       <div className="articles">
-        {articles}
+        {articleNode}
       </div>
     );
   }
