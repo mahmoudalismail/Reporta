@@ -2,7 +2,7 @@ from nytimesarticle import articleAPI
 import datetime
 import time
 
-api = articleAPI('ae14e1d2f3c40ad244abceddb249d691:17:65860898')
+api = articleAPI('ae2b43b298972426c8e43a96afcb9aaa:0:70254909')
 
 def clean_entry(art):
 	clean = {}
