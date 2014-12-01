@@ -6,11 +6,12 @@ body {
   text-align: center;
   background-color: #FFA200;
   font-family: lato;
+  color: white;
 }
 
 #app {
   margin: 0 auto;
-  max-width: 700px;
+  max-width: 600px;
   width: 100%;
   text-align: center;
 }
@@ -30,6 +31,50 @@ body {
     to{
         -webkit-transform: rotate(360deg);
     }
+}
+
+.speech {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.user-speech {
+  text-align: right;
+  color: #FDDD90;
+  font-size: 1.2em;
+}
+
+.reporta-speech {
+  text-align: left;
+  font-size: 1.5em;
+}
+
+.timeline-leave {
+  opacity: 1;
+  transition: opacity 1s ease-in;
+}
+.timeline-leave.timeline-leave-active {
+  opacity: 0.01;
+}
+
+.timeline-enter {
+  opacity: 0.01;
+  transition: opacity 1s ease-in;
+}
+.timeline-enter.timeline-enter-active {
+  opacity: 1;
+}
+
+.memory-enter {
+  opacity: 0.01;
+  max-height: 1px;
+  transition: opacity .5s ease-in;
+  transition: max-height: .5s ease-in;
+}
+
+.memory-enter.memory-enter-active {
+  opacity: 1;
+  max-height: 100px;
 }
 
 #login {
