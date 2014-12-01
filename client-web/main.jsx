@@ -1,5 +1,28 @@
+var cx = React.addons.classSet;
+var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
+var Reporta = Reporta || undefined;
+
+var canSynthesizeSpeech = ('speechSynthesis' in window);
+
+var speechQueue = [];
+var tts = function(text) {
+  if (!canSynthesizeSpeech) {
+    return;
+  }
+  var msg = new SpeechSynthesisUtterance(text);
+  window.speechSynthesis.speak(msg);
+};
+
 var App = React.createClass({
   getInitialState: function() {
+    if (!localStorage.id) {
+      tts("Hi, My name is Reporta.");
+    } else {
+      tts("Good to see you again " + localStorage.name);
+      if (Reporta) { 
+        Reporta.setauth(localStorage.id);
+      }
+    }
     return {
       id: localStorage.id,
       name: localStorage.name
@@ -10,7 +33,7 @@ var App = React.createClass({
       <div id="app">
         {
           this.state.id ?
-          <Timeline _id={this.id} name={this.state.name} app={this} /> :
+          <Timeline _id={this.state.id} name={this.state.name} app={this} /> :
           <Login app={this} />
         }
       </div>
@@ -19,6 +42,28 @@ var App = React.createClass({
 });
 
 var Timeline = React.createClass({
+  mixins: [ReactFireMixin],
+  getInitialState: function() {
+    return {
+      memory: null
+    };
+  },
+  componentWillMount: function() {
+    var self = this;
+    this.loaded = false;
+    this.firebaseRef = new Firebase("https://reporta-ajz.firebaseio.com/" + this.props._id);
+    this.bindAsArray(this.firebaseRef, "memory");
+    this.firebaseRef.on("child_added", function(dataSnapshot){
+      console.log("New data");
+      var datum = dataSnapshot.val();
+      if (datum.type == "reporta" && self.loaded) {
+        tts(datum.value);
+      }
+    });
+  },
+  eraseMemory: function() {
+    this.firebaseRef.remove();
+  },
   logout: function() {
     delete localStorage.id;
     delete localStorage.name;
@@ -28,12 +73,61 @@ var Timeline = React.createClass({
     });
   },
   render: function() {
-    return(
-      <div id="timeline">
-        <h1>
-          The Timeline
+    var superNode;
+    if (this.state.memory) {
+      var reverse_history = this.state.memory.reverse();
+      var history_length = reverse_history.length;
+      var nodes = _.map(reverse_history, function(memento, i) {
+        var index = history_length - i - 1;
+        switch(memento.type) {
+          case "user":
+            return <Speech key={index} role="user" text={memento.value} />;
+          case "reporta":
+            return <Speech key={index} role="reporta" text={memento.value} />;
+          default:
+            return <div key={index}>Not yet supported: {value}</div>;
+        }
+      });
+      this.loaded = true;
+      superNode = (
+        <div key="timeline">
+          <form className="pure-form">
+            <input className="pure-input-1" type="text" placeholder="Ask me a question!" />
+          </form>
+          <ReactCSSTransitionGroup transitionName="memory">
+            {nodes}
+          </ReactCSSTransitionGroup>
+          <a href="#" onClick={this.logout}>Logout</a><br/>
+          <a href="#" onClick={this.eraseMemory}>Clear</a>
+        </div>
+      );
+    } else {
+      superNode = (
+        <h1 key="loading">
+          I'm Coming {this.props.name}
         </h1>
-        <a href="#" onClick={this.logout}>Logout</a>
+      );
+    }
+    return (
+      <div id="timeline">
+        <ReactCSSTransitionGroup transitionName="timeline">
+          {superNode}
+        </ReactCSSTransitionGroup>
+      </div>
+    );
+  }
+});
+
+var Speech = React.createClass({
+  render: function() {
+    var classes = cx({
+      "speech": true,
+      "user-speech": this.props.role == "user",
+      "reporta-speech": this.props.role != "user"
+    });
+    return (
+      <div className={classes}>
+        {this.props.text}
       </div>
     );
   }
@@ -75,8 +169,10 @@ var Login = React.createClass({
             id: localStorage.id,
             name: localStorage.name
           });
+          if (Reporta) { 
+            Reporta.setauth(localStorage.id);
+          }
         } else {
-          console.log("Error");
           self.setState({
             message: "Error logging in"
           });
@@ -108,8 +204,10 @@ var Login = React.createClass({
             id: localStorage.id,
             name: localStorage.name
           });
+          if (Reporta) { 
+            Reporta.setauth(localStorage.id);
+          }
         } else {
-          console.log("Error");
           self.setState({
             message: "Error registering"
           });
@@ -148,7 +246,6 @@ var Login = React.createClass({
   }
 });
 
-console.log("going");
 React.render(
   <App />,
   document.getElementById("main")
