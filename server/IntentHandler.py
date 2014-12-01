@@ -42,8 +42,9 @@ class IntentHandler(tornado.web.RequestHandler):
         elif (intent == "save_headline"):
             self.save_headline()
         else:
-            self.error_response("No recognizable intent found")
-
+            error_messages = Error(self.name)
+            self.error_response(error_messages.get_phrase())
+            
     def start(self):
         r = RedisClient()
 
@@ -165,7 +166,7 @@ class IntentHandler(tornado.web.RequestHandler):
             if article['multimedia']:
                 r.set(self._id + ":selected", article)
   
-                have_media = Media()
+                have_media = Media(self.name)
                 self.payload = {
                     "read": media.get_phrase() # usable url for html
                 }
@@ -175,7 +176,18 @@ class IntentHandler(tornado.web.RequestHandler):
                 self.error_response("Sorry I don't have images for that article")
         else:
             self.error_response("Sorry I don't know what article you are talking about")
-
+    
+    def save_headline(self):
+      article = self.extract_article()
+      if article:
+        confirmation = SaveConfirmation()
+        self.payload = {
+          "read": confirmation.get_phrase()
+        }
+        # Do some other stuff to actually save the article somewhere
+        self.finish_response()
+      else:
+        self.error_response("I'm sorry. I don't know which article you want me to save.")
 
     def finish_response(self):
         f = FirebaseDB()
