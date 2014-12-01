@@ -39,6 +39,12 @@ body {
   margin-bottom: 20px;
 }
 
+.media {
+  padding: 30px;
+}
+.media img {
+  width: 100%;
+}
 .user-speech {
   text-align: right;
   color: #FDDD90;

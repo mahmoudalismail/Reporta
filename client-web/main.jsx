@@ -6,7 +6,9 @@ var canSynthesizeSpeech = ('speechSynthesis' in window);
 
 var speechQueue = [];
 var tts = function(text) {
+  console.log("speaking");
   if (canSynthesizeSpeech) {
+    console.log("native");
     var msg = new SpeechSynthesisUtterance(text);
     window.speechSynthesis.speak(msg);
   } else if (Reporta) {
@@ -89,6 +91,8 @@ var Timeline = React.createClass({
             return <Speech key={index} role="reporta" text={memento.value} />;
           case "article":
             return <Article key={index} articles={memento.value} />;
+          case "media":
+            return <Media key={index} image={memento.value} />;
           default:
             return <div key={index}>Not yet supported</div>;
         }
@@ -133,6 +137,16 @@ var Speech = React.createClass({
     return (
       <div className={classes}>
         {this.props.text}
+      </div>
+    );
+  }
+});
+
+var Media = React.createClass({
+  render: function() {
+    return (
+      <div className="media">
+        <img src={this.props.image} />
       </div>
     );
   }
