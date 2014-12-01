@@ -168,7 +168,7 @@ class IntentHandler(tornado.web.RequestHandler):
   
                 have_media = Media(self.name)
                 self.payload = {
-                    "read": media.get_phrase() # usable url for html
+                    "read": have_media.get_phrase() # usable url for html
                 }
                 self.pushlater = {"type": "media", "value": article['multimedia']}
                 self.finish_response()
