@@ -102,6 +102,24 @@ var Timeline = React.createClass({
   eraseMemory: function() {
     this.firebaseRef.remove();
   },
+  handleQuery: function(e) {
+    e.preventDefault();
+    var queryInput = this.refs.query.getDOMNode();
+    var query = queryInput.value;
+    queryInput.value = "";
+    $.ajax({
+      type: "POST",
+      url: "/query",
+      data: JSON.stringify({
+        id: localStorage.id,
+        query: query
+      }),
+      success: function(data) {
+        console.log("Hi I'm posting");
+        console.log(data);
+      }
+    });
+  },
   logout: function() {
     delete localStorage.id;
     delete localStorage.name;
@@ -133,8 +151,8 @@ var Timeline = React.createClass({
       this.isLoaded = true;
       superNode = (
         <div key="timeline">
-          <form className="pure-form">
-            <input className="pure-input-1" type="text" placeholder="Ask me a question!" />
+          <form className="pure-form" onSubmit={this.handleQuery}>
+            <input className="pure-input-1" type="text" placeholder="Ask me a question!" ref="query" />
           </form>
           <ReactCSSTransitionGroup transitionName="memory">
             {nodes}

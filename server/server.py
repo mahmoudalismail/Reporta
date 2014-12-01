@@ -14,6 +14,7 @@ from IntentHandler import IntentHandler
 from FileHandler import FileHandler
 from LoginHandler import LoginHandler
 from RegisterHandler import RegisterHandler
+from QueryHandler import QueryHandler
 
 # Load NLP class
 NLPParser.load()
@@ -24,6 +25,7 @@ def get_app():
         (r'/api', IntentHandler),
         (r'/register', RegisterHandler),
         (r'/login', LoginHandler),
+        (r'/query', QueryHandler),
         (r'/', FileHandler, {"path": os.path.join(client_path, "index.html")}),
         (r'/(.*)', tornado.web.StaticFileHandler, {"path": client_path})
     ], debug=True)
