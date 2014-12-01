@@ -11,7 +11,7 @@ from NLPParser import NLPParser
 class IntentHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     def post(self):
-        self.pushlater = []
+        self.pushlater = {}
         self.payload = {}
         self.outcome = tornado.escape.json_decode(self.request.body)
         intent = self.outcome["intent"]
@@ -95,9 +95,13 @@ class IntentHandler(tornado.web.RequestHandler):
 
     def respond_get_headlines(self, payload):
         sentence_headlines, topic_headlines, article_order = NLPParser.parse_headlines(map(lambda x: x["headline"], payload))
+        article_values = []
         for article in payload:
-          obj = {"type": "article", "value": {"headline": article["headline"], "url": article["url"], "snippet": article["snippet"]}}
-          self.pushlater.append(obj)
+          article_values.append({"headline": article["headline"], "url": article["url"], "snippet": article["snippet"]})
+        self.pushlater = {
+          "type": "article",
+          "value": article_values
+        }
         found = FoundHeadlines(sentence_headlines, topic_headlines, self.name)
         self.payload = {
             "read": found.get_phrase()
@@ -198,7 +202,7 @@ class IntentHandler(tornado.web.RequestHandler):
         result = f.post(self._id, {"type": "reporta", "value": self.payload["read"]})
         if self.pushlater:
           f.post(self._id, self.pushlater)
-          self.pushlater = []
+          self.pushlater = {}
         self.finish()
 
     def error_response(self, reason):
