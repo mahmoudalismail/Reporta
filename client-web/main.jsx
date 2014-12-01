@@ -2,14 +2,9 @@ var cx = React.addons.classSet;
 var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 var Reporta = Reporta || undefined;
 
-if (Reporta) {
-  Reporta.setauth("yea");
-} else {
-  alert("No reporta");
-}
-
 var canSynthesizeSpeech = ('speechSynthesis' in window);
 
+var speechQueue = [];
 var tts = function(text) {
   if (!canSynthesizeSpeech) {
     return;
@@ -25,7 +20,7 @@ var App = React.createClass({
     } else {
       tts("Good to see you again " + localStorage.name);
       if (Reporta) { 
-        Reporta.auth(localStorage.id);
+        Reporta.setauth(localStorage.id);
       }
     }
     return {
@@ -175,7 +170,7 @@ var Login = React.createClass({
             name: localStorage.name
           });
           if (Reporta) { 
-            Reporta.auth(localStorage.id);
+            Reporta.setauth(localStorage.id);
           }
         } else {
           self.setState({
@@ -210,7 +205,7 @@ var Login = React.createClass({
             name: localStorage.name
           });
           if (Reporta) { 
-            Reporta.auth(localStorage.id);
+            Reporta.setauth(localStorage.id);
           }
         } else {
           self.setState({

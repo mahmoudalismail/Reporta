@@ -210,6 +210,10 @@ class IntentHandler(tornado.web.RequestHandler):
         f = FirebaseDB()
         self.payload["status"] = 200
         self.write(tornado.escape.json_encode(self.payload))
+        print "DEBUGGING RESPONSE"
+        print self.payload
+        print self.outcome
+        print self._id
         if "_text" in self.outcome:
             result = f.post(self._id, {"type": "user", "value": self.outcome["_text"]})
         result = f.post(self._id, {"type": "reporta", "value": self.payload["read"]})
