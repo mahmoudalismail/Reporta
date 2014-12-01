@@ -11,8 +11,8 @@ from NLPParser import NLPParser
 class IntentHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     def post(self):
-        self.payload = {}
         self.pushlater = []
+        self.payload = {}
         self.outcome = tornado.escape.json_decode(self.request.body)
         intent = self.outcome["intent"]
         if ("id" in self.outcome):
@@ -185,7 +185,7 @@ class IntentHandler(tornado.web.RequestHandler):
             result = f.post(self._id, {"type": "user", "value": self.outcome["_text"]})
         result = f.post(self._id, {"type": "reporta", "value": self.payload["read"]})
         if self.pushlater:
-          f.post(self._id, self.push_later)
+          f.post(self._id, self.pushlater)
           self.pushlater = []
         self.finish()
 
