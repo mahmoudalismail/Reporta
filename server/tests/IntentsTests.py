@@ -209,9 +209,6 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
         payload = tornado.escape.json_decode(response.body)
         self.assertEqual(payload["status"], 200)
         self.assertTrue(len(payload["read"]) > 0)
-        
-        self.assertTrue("http://www.nytimes.com/images" in payload["read"])
-        self.assertFalse("thumbStandard.jpg" in payload["read"])
 
         mock_outcome =  {
             "id": "safdsafsdf",
