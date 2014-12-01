@@ -44,7 +44,7 @@ class IntentHandler(tornado.web.RequestHandler):
         else:
             error_messages = Error(self.name)
             self.error_response(error_messages.get_phrase())
-            
+
     def start(self):
         r = RedisClient()
 
@@ -160,6 +160,7 @@ class IntentHandler(tornado.web.RequestHandler):
         if article:
             r.set(self._id + ":selected", article)
             r.set(self._id + ":state", "selected")
+            print article
             self.payload = {
                 "read": "%s. Would you like me to send the full article to your kindle?" % article["snippet"]
             }
