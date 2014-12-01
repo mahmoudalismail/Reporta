@@ -1,11 +1,8 @@
-alert("Js started");
 var cx = React.addons.classSet;
 var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
-var hasReporta = window.location.href.indexOf("device=true") != -1;
 
 var canSynthesizeSpeech = ('speechSynthesis' in window);
 
-alert("Checked for reporta: " + hasReporta);
 var speechQueue = [];
 var tts = function(text) {
   console.log("speaking");
@@ -13,8 +10,6 @@ var tts = function(text) {
     console.log("native");
     var msg = new SpeechSynthesisUtterance(text);
     window.speechSynthesis.speak(msg);
-  } else if (hasReporta) {
-    Reporta.speak(text);
   }
 };
 
@@ -24,9 +19,6 @@ var App = React.createClass({
       tts("Hi, My name is Reporta.");
     } else {
       tts("Good to see you again " + localStorage.name);
-      if (hasReporta) { 
-        Reporta.setauth(localStorage.id);
-      }
     }
     return {
       id: localStorage.id,
@@ -225,9 +217,6 @@ var Login = React.createClass({
             id: localStorage.id,
             name: localStorage.name
           });
-          if (hasReporta) { 
-            Reporta.setauth(localStorage.id);
-          }
         } else {
           self.setState({
             message: "Error logging in"
@@ -260,9 +249,6 @@ var Login = React.createClass({
             id: localStorage.id,
             name: localStorage.name
           });
-          if (hasReporta) { 
-            Reporta.setauth(localStorage.id);
-          }
         } else {
           self.setState({
             message: "Error registering"
@@ -302,9 +288,7 @@ var Login = React.createClass({
   }
 });
 
-alert("Rendering");
 React.render(
   <App />,
   document.getElementById("main")
 );
-alert("Rendered");
