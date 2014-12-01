@@ -4,7 +4,6 @@ import os
 import requests
 
 class QueryHandler(tornado.web.RequestHandler):
-  @tornado.web.asynchronous
   def post(self):
     payload = {}
     data = tornado.escape.json_decode(self.request.body)
@@ -27,7 +26,7 @@ class QueryHandler(tornado.web.RequestHandler):
     print "Sending noe"
     print tornado.escape.json_encode(payload)
     client = tornado.httpclient.AsyncHTTPClient()
-    r = requests.post("http://104.131.102.192/api",
+    r = requests.post("http://104.131.102.192:81/api",
                       data=tornado.escape.json_encode(payload), headers={'content-type': 'application/json'})
     print r
 
