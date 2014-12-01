@@ -163,7 +163,9 @@ class IntentHandler(tornado.web.RequestHandler):
         if article:
             r.set(self._id + ":selected", article)
             r.set(self._id + ":state", "selected")
+            print "**************"
             print article
+            print article is None
             self.payload = {
                 "read": "%s. Would you like me to send the full article to your kindle?" % article["snippet"]
             }
