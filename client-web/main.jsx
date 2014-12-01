@@ -6,11 +6,12 @@ var canSynthesizeSpeech = ('speechSynthesis' in window);
 
 var speechQueue = [];
 var tts = function(text) {
-  if (!canSynthesizeSpeech) {
-    return;
+  if (canSynthesizeSpeech) {
+    var msg = new SpeechSynthesisUtterance(text);
+    window.speechSynthesis.speak(msg);
+  } else {
+    Reporta.speak(text);
   }
-  var msg = new SpeechSynthesisUtterance(text);
-  window.speechSynthesis.speak(msg);
 };
 
 var App = React.createClass({
@@ -50,15 +51,17 @@ var Timeline = React.createClass({
   },
   componentWillMount: function() {
     var self = this;
-    this.loaded = false;
+    this.isLoaded = false;
     this.firebaseRef = new Firebase("https://reporta-ajz.firebaseio.com/" + this.props._id);
     this.bindAsArray(this.firebaseRef, "memory");
-    this.firebaseRef.on("child_added", function(dataSnapshot){
-      console.log("New data");
-      var datum = dataSnapshot.val();
-      if (datum.type == "reporta" && self.loaded) {
-        tts(datum.value);
+    this.firebaseRef.on("child_added", function(new_child) {
+      console.log("new data");
+      var data = new_child.val();
+      console.log(data);
+      if (data.type == "reporta" && self.isLoaded) {
+        tts(data.value);
       }
+
     });
   },
   eraseMemory: function() {
@@ -75,7 +78,7 @@ var Timeline = React.createClass({
   render: function() {
     var superNode;
     if (this.state.memory) {
-      var reverse_history = this.state.memory.reverse();
+      var reverse_history = this.state.memory.slice().reverse();
       var history_length = reverse_history.length;
       var nodes = _.map(reverse_history, function(memento, i) {
         var index = history_length - i - 1;
@@ -84,11 +87,13 @@ var Timeline = React.createClass({
             return <Speech key={index} role="user" text={memento.value} />;
           case "reporta":
             return <Speech key={index} role="reporta" text={memento.value} />;
+          case "article":
+            return <Article key={index} articles={memento.value} />;
           default:
-            return <div key={index}>Not yet supported: {value}</div>;
+            return <div key={index}>Not yet supported</div>;
         }
       });
-      this.loaded = true;
+      this.isLoaded = true;
       superNode = (
         <div key="timeline">
           <form className="pure-form">
@@ -128,6 +133,26 @@ var Speech = React.createClass({
     return (
       <div className={classes}>
         {this.props.text}
+      </div>
+    );
+  }
+});
+
+var Article = React.createClass({
+  render: function() {
+    var articles = _.map(this.props.articles, function(article) {
+      return (
+        <h2>
+            <a href={article.url}>
+              {article.headline}
+            </a>
+            <hr />
+        </h2>
+      );
+    });
+    return (
+      <div className="articles">
+        {articles}
       </div>
     );
   }

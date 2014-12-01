@@ -7,6 +7,7 @@ body {
   background-color: #FFA200;
   font-family: lato;
   color: white;
+  text-transform: lowercase;
 }
 
 #app {
@@ -68,13 +69,27 @@ body {
 .memory-enter {
   opacity: 0.01;
   max-height: 1px;
-  transition: opacity .5s ease-in;
-  transition: max-height: .5s ease-in;
+  transition: opacity 1.5s ease-in;
+  transition: max-height: 1.5s ease-in;
 }
 
 .memory-enter.memory-enter-active {
   opacity: 1;
   max-height: 100px;
+}
+
+.articles {
+  border: 1px solid #FF6300;
+  border-radius: 30px;
+  background-color: #FF6300;
+  font-size: 0.8em;
+  margin: 50px;
+  padding: 30px;
+}
+
+.articles a {
+  text-decoration: none;
+  color: white;
 }
 
 #login {
