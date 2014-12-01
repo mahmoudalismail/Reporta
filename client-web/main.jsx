@@ -3,7 +3,7 @@ var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 var Reporta = Reporta || undefined;
 
 if (Reporta) {
-  Reporta.setAuth("yea");
+  Reporta.setauth("yea");
 } else {
   alert("No reporta");
 }
