@@ -2,7 +2,9 @@ import datetime
 import random
 
 def name_or_empty(name):
-    return " " + name if name and random.random() < 0.3 else ""
+    print "NAME**"
+    print name
+    return " " + name if (name and random.random() < 0.3) else ""
 
 class Greeting:
   def __init__(self, username, request_time):

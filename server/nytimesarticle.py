@@ -115,6 +115,10 @@ class articleAPI(object):
         
         client = tornado.httpclient.AsyncHTTPClient()
         def parse_result(response):
-            payload = tornado.escape.json_decode(response.body)
-            callback(payload)
+            try:
+                payload = tornado.escape.json_decode(response.body)
+                callback(payload)
+            except:
+                print "NYTIMES API ERROR***"
+                print response.body
         response = client.fetch(url, parse_result)

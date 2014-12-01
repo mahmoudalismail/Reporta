@@ -3,6 +3,37 @@ var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
 var canSynthesizeSpeech = ('speechSynthesis' in window);
 
+var random_choice = function(arr) {
+  var rand = Math.random();
+  rand *= arr.length;
+  rand = Math.floor(rand);
+  return arr[rand];
+};
+
+var greeting = function(name) {
+  var time = new Date().getHours();
+  var tod;
+  if (time < 12) {
+    tod = "morning";
+  } else if (time >= 12 && time < 17) {
+    tod = "afternoon";
+  } else {
+    tod = "evening";
+  }
+  var phrases = [
+    "Hello " + name,
+    "Hi " + name,
+    "Hey " + name,
+    "Good " + tod + name + "."
+  ];
+  var exclamations = [
+    "I hope you've had a good day today!",
+    "I missed you since last time we chatted.",
+    "I'm very excited that I get to share the news with you today!"
+  ];
+  return random_choice(phrases) + "." + random_choice(exclamations);
+};
+
 var speechQueue = [];
 var tts = function(text) {
   console.log("speaking");
@@ -18,7 +49,7 @@ var App = React.createClass({
     if (!localStorage.id) {
       tts("Hi, My name is Reporta.");
     } else {
-      tts("Good to see you again " + localStorage.name);
+      tts(greeting(localStorage.name));
     }
     return {
       id: localStorage.id,
