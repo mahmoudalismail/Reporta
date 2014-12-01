@@ -164,6 +164,7 @@ class IntentHandler(tornado.web.RequestHandler):
             r.set(self._id + ":selected", article)
             r.set(self._id + ":state", "selected")
             print "**************"
+            print type(article)
             print article
             print article is None
             self.payload = {
