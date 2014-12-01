@@ -10,22 +10,19 @@ def clean_entry(art):
 		clean['snippet'] = art['abstract'].encode('ascii', 'ignore')
 	else:
 		clean['snippet'] = art['snippet'].encode('ascii', 'ignore')
-	# clean['abstract'] = art['abstract']
 	clean['url'] = art['web_url']
 	clean['multimedia'] = "http://www.nytimes.com/"+str(art['multimedia'][1]['url'])
 	clean['keywords'] = []
 	for word in art['keywords']:
 		clean['keywords'].append(word['value'].encode('ascii', 'ignore'))
-	#change to just key words to list of just terms
-	#clean['pub_date'] = art['pub_date'][:10].replace("-",'')
-	#clean['type_of_material'] = art['type_of_material']
-	#clean['section_name'] = art['section_name']
 	clean['headline'] = art ['headline']['main'].encode('ascii', 'ignore')
-	#clean['_id'] = art['_id']
 	return clean
 
 def get_articles(cb, so_far=[], topic=None, page=0, limit=5):
         def respond_get_articles(payload):
+                if not payload:
+                    cb(None)
+
                 good_articles = []
                 for art in payload['response']['docs']:
                         if (art['snippet'] or art['abstract']) and art['multimedia'] and art['type_of_material'] in ["News", "Editorial"]:
@@ -35,8 +32,6 @@ def get_articles(cb, so_far=[], topic=None, page=0, limit=5):
                         cb(good_articles)
                 else:
                         get_articles(cb, so_far=good_articles, topic=topic, page=(page+1), limit=limit)
-
-
         if topic:
                 api.search(respond_get_articles, q = topic, page = page, sort="newest")
         else:

@@ -119,6 +119,7 @@ class articleAPI(object):
                 payload = tornado.escape.json_decode(response.body)
                 callback(payload)
             except:
+                callback(None)
                 print "NYTIMES API ERROR***"
                 print response.body
         response = client.fetch(url, parse_result)

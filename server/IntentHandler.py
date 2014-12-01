@@ -59,6 +59,8 @@ class IntentHandler(tornado.web.RequestHandler):
         NYTimes.get_headlines(self.respond_start)
 
     def respond_start(self, articles):
+        if not article:
+            self.error_response("API error")
         r = RedisClient()
         keywords = r.get(self._id + ":keywords")
 
@@ -97,6 +99,8 @@ class IntentHandler(tornado.web.RequestHandler):
 
 
     def respond_get_headlines(self, payload):
+        if not payload:
+            self.error_response("API error")
         sentence_headlines, topic_headlines, article_order = NLPParser.parse_headlines(map(lambda x: x["headline"], payload))
         article_values = []
         for article in payload:
