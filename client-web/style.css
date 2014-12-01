@@ -74,14 +74,11 @@ body {
 
 .memory-enter {
   opacity: 0.01;
-  max-height: 1px;
   transition: opacity 1.5s ease-in;
-  transition: max-height: 1.5s ease-in;
 }
 
 .memory-enter.memory-enter-active {
   opacity: 1;
-  max-height: 100px;
 }
 
 .articles {

@@ -1,9 +1,11 @@
+alert("Js started");
 var cx = React.addons.classSet;
 var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
-var hasReporta = window.Reporta !== undefined;
+var hasReporta = window.location.href.indexOf("device=true") != -1;
 
 var canSynthesizeSpeech = ('speechSynthesis' in window);
 
+alert("Checked for reporta: " + hasReporta);
 var speechQueue = [];
 var tts = function(text) {
   console.log("speaking");
@@ -300,7 +302,9 @@ var Login = React.createClass({
   }
 });
 
+alert("Rendering");
 React.render(
   <App />,
   document.getElementById("main")
 );
+alert("Rendered");
