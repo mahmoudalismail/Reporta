@@ -4,6 +4,8 @@ import random
 def name_or_empty(name):
     print "NAME**"
     print name
+    print (name and random.random() < 0.3)
+    print " " + name if (name and random.random() < 0.3) else ""
     return " " + name if (name and random.random() < 0.3) else ""
 
 class Greeting:
