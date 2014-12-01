@@ -1,7 +1,13 @@
 var cx = React.addons.classSet;
 var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
+var Reporta = Reporta || undefined;
+
+var canSynthesizeSpeech = ('speechSynthesis' in window);
 
 var tts = function(text) {
+  if (!canSynthesizeSpeech) {
+    return;
+  }
   var msg = new SpeechSynthesisUtterance(text);
   window.speechSynthesis.speak(msg);
 };
@@ -42,11 +48,16 @@ var Timeline = React.createClass({
     };
   },
   componentWillMount: function() {
+    var self = this;
+    this.loaded = false;
     this.firebaseRef = new Firebase("https://reporta-ajz.firebaseio.com/" + this.props._id);
     this.bindAsArray(this.firebaseRef, "memory");
     this.firebaseRef.on("child_added", function(dataSnapshot){
       console.log("New data");
-      console.log(dataSnapshot.val());
+      var datum = dataSnapshot.val();
+      if (datum.type == "reporta" && self.loaded) {
+        tts(datum.value);
+      }
     });
   },
   eraseMemory: function() {
@@ -76,6 +87,7 @@ var Timeline = React.createClass({
             return <div key={index}>Not yet supported: {value}</div>;
         }
       });
+      this.loaded = true;
       superNode = (
         <div key="timeline">
           <form className="pure-form">

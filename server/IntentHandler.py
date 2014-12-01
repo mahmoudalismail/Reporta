@@ -153,9 +153,13 @@ class IntentHandler(tornado.web.RequestHandler):
 
     def get_summary(self):
         r = RedisClient()
+        state = r.get(self._id + ":state")
+        if state == "start":
+            self.error_response("Sorry, what kind of news would you like to hear about?")
         article = self.extract_article()
         if article:
             r.set(self._id + ":selected", article)
+            r.set(self._id + ":state", "selected")
             self.payload = {
                 "read": "%s. Would you like me to send the full article to your kindle?" % article["snippet"]
             }
@@ -165,11 +169,14 @@ class IntentHandler(tornado.web.RequestHandler):
 
     def get_media(self):
         r = RedisClient()
+        state = r.get(self._id + ":state")
+        if state == "start":
+            self.error_response("Sorry, what kind of news would you like to hear about?")
         article = self.extract_article()
         if article:
             if article['multimedia']:
                 r.set(self._id + ":selected", article)
-  
+                r.set(self._id + ":state", "selected")
                 have_media = Media(self.name)
                 self.payload = {
                     "read": have_media.get_phrase() # usable url for html
@@ -180,8 +187,12 @@ class IntentHandler(tornado.web.RequestHandler):
                 self.error_response("Sorry I don't have images for that article")
         else:
             self.error_response("Sorry I don't know what article you are talking about")
-    
+
     def save_headline(self):
+      r = RedisClient()
+      state = r.get(self._id + ":state")
+      if state == "start":
+        self.error_response("Sorry, I didn't get that.");
       article = self.extract_article()
       if article:
         confirmation = SaveConfirmation()
@@ -189,6 +200,8 @@ class IntentHandler(tornado.web.RequestHandler):
           "read": confirmation.get_phrase()
         }
         # Do some other stuff to actually save the article somewhere
+        r.set(self._id + ":selected", article)
+        r.set(self._id + ":state", "selected")
         self.finish_response()
       else:
         self.error_response("I'm sorry. I don't know which article you want me to save.")
