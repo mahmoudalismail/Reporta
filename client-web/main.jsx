@@ -35,11 +35,19 @@ var greeting = function(name) {
 };
 
 var speechQueue = [];
+
+var endSpeech = function() {
+  document.getElementById("reportaLogo").classList.add("visible")
+  document.getElementById("reportaLogo-fast").classList.remove("visible")
+};
 var tts = function(text) {
   console.log("speaking");
   if (canSynthesizeSpeech) {
-    console.log("native");
+    console.log("adding class");
+    document.getElementById("reportaLogo").classList.remove("visible")
+    document.getElementById("reportaLogo-fast").classList.add("visible")
     var msg = new SpeechSynthesisUtterance(text);
+    msg.onend = endSpeech;
     window.speechSynthesis.speak(msg);
   }
 };

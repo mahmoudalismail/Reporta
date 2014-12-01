@@ -18,11 +18,25 @@ body {
 }
 
 #reportaLogo {
+  display: none;
   margin-top: 30px;
   width: 100px;
   height: 100px;
-  -webkit-animation: rotate 10s infinite; /* Safari 4+ */
+  -webkit-animation: rotate 4s infinite; /* Safari 4+ */
   -webkit-animation-timing-function: linear;
+}
+
+#reportaLogo-fast {
+  display: none;
+  margin-top: 30px;
+  width: 100px;
+  height: 100px;
+  -webkit-animation: rotate 1s infinite; /* Safari 4+ */
+  -webkit-animation-timing-function: linear;
+}
+
+.visible {
+  display: inline !important;
 }
 
 @-webkit-keyframes rotate {
