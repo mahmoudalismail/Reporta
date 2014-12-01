@@ -1,7 +1,7 @@
 import tornado.escape
 import tornado.web
 import tornado.gen
-from firebase import firebase
+from FirebaseDB import FirebaseDB
 from fuzzywuzzy import process
 from RedisClient import RedisClient
 from NYTimes import NYTimes
@@ -11,6 +11,7 @@ from NLPParser import NLPParser
 class IntentHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     def post(self):
+        self.pushlater = {}
         self.payload = {}
         self.outcome = tornado.escape.json_decode(self.request.body)
         intent = self.outcome["intent"]
@@ -19,11 +20,11 @@ class IntentHandler(tornado.web.RequestHandler):
         else:
             self.error_response("No id passed in outcome")
 
-        f = firebase.FirebaseApplication('https://reporta-ajz.firebaseio.com', None)
+        f = FirebaseDB()
         if ("user" in self.outcome):
-            f.post('/' + self._id, {"type": "user", "value": self.outcome["user"] })
+            f.post(self._id, {"type": "user", "value": self.outcome["user"] })
         if ("reporta" in self.outcome):
-            f.post('/' + self._id, {"type": "reporta", "value": self.outcome["reporta"] })
+            f.post(self._id, {"type": "reporta", "value": self.outcome["reporta"] })
 
         r = RedisClient()
         self.name = r.get(self._id + ":name")
@@ -41,8 +42,9 @@ class IntentHandler(tornado.web.RequestHandler):
         elif (intent == "save_headline"):
             self.save_headline()
         else:
-            self.error_response("No recognizable intent found")
-
+            error_messages = Error(self.name)
+            self.error_response(error_messages.get_phrase())
+            
     def start(self):
         r = RedisClient()
 
@@ -93,7 +95,13 @@ class IntentHandler(tornado.web.RequestHandler):
 
     def respond_get_headlines(self, payload):
         sentence_headlines, topic_headlines, article_order = NLPParser.parse_headlines(map(lambda x: x["headline"], payload))
-
+        article_values = []
+        for article in payload:
+          article_values.append({"headline": article["headline"], "url": article["url"], "snippet": article["snippet"]})
+        self.pushlater = {
+          "type": "article",
+          "value": article_values
+        }
         found = FoundHeadlines(sentence_headlines, topic_headlines, self.name)
         self.payload = {
             "read": found.get_phrase()
@@ -161,23 +169,40 @@ class IntentHandler(tornado.web.RequestHandler):
         if article:
             if article['multimedia']:
                 r.set(self._id + ":selected", article)
+  
+                have_media = Media(self.name)
                 self.payload = {
-                    "read": "%s" % article['multimedia'] # usable url for html
+                    "read": have_media.get_phrase() # usable url for html
                 }
+                self.pushlater = {"type": "media", "value": article['multimedia']}
                 self.finish_response()
             else:
                 self.error_response("Sorry I don't have images for that article")
         else:
             self.error_response("Sorry I don't know what article you are talking about")
-
+    
+    def save_headline(self):
+      article = self.extract_article()
+      if article:
+        confirmation = SaveConfirmation()
+        self.payload = {
+          "read": confirmation.get_phrase()
+        }
+        # Do some other stuff to actually save the article somewhere
+        self.finish_response()
+      else:
+        self.error_response("I'm sorry. I don't know which article you want me to save.")
 
     def finish_response(self):
-        f = firebase.FirebaseApplication('https://reporta-ajz.firebaseio.com', None)
+        f = FirebaseDB()
         self.payload["status"] = 200
         self.write(tornado.escape.json_encode(self.payload))
         if "_text" in self.outcome:
-            result = f.post('/' + self._id, {"type": "user", "value": self.outcome["_text"]})
-        result = f.post('/' + self._id, {"type": "reporta", "value": self.payload["read"]})
+            result = f.post(self._id, {"type": "user", "value": self.outcome["_text"]})
+        result = f.post(self._id, {"type": "reporta", "value": self.payload["read"]})
+        if self.pushlater:
+          f.post(self._id, self.pushlater)
+          self.pushlater = {}
         self.finish()
 
     def error_response(self, reason):

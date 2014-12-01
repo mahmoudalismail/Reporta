@@ -21,11 +21,16 @@ class Greeting:
       "Hey %s" % self.username,
       "Good %(tod)s %(user)s" % {'tod': tod, 'user': self.username}
     ]
-    #ADD EXCLAMATIONS LATER
-    return self.phrases
+    self.exclamations = [
+      "I hope you've had a good day today!",
+      "I missed you since last time we chatted.",
+      "I'm very excited that I get to share the news with you today!"
+    ]
+    return self.phrases, self.exclamations
   def get_phrase(self):
     n = random.randrange(len(self.phrases))
-    return self.phrases[n]
+    m = random.randrange(len(self.exclamations))
+    return self.phrases[n] + self.exclamations[m] if random.random() < 0.25 else self.phrases[n]
 
 class UpdatesOrNoUpdates:
   def __init__(self, name, updates=False):
