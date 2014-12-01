@@ -151,7 +151,6 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
                                                 headers=tornado.httputil.HTTPHeaders({"content-type": "application/json"}),
                                                 body=tornado.escape.json_encode(mock_outcome))
         payload = tornado.escape.json_decode(response.body)
-        print(payload["read"])
         self.assertEqual(payload["status"], 200)
         self.assertTrue(len(payload["read"]) > 0)
         mock_outcome =  {
@@ -170,7 +169,6 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
                                                 headers=tornado.httputil.HTTPHeaders({"content-type": "application/json"}),
                                                 body=tornado.escape.json_encode(mock_outcome))
         payload = tornado.escape.json_decode(response.body)
-        print(payload["read"])
         self.assertEqual(payload["status"], 200)
         self.assertTrue(len(payload["read"]) > 0)
         
@@ -211,7 +209,7 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
         payload = tornado.escape.json_decode(response.body)
         self.assertEqual(payload["status"], 200)
         self.assertTrue(len(payload["read"]) > 0)
-        print(payload["read"])
+        
         self.assertTrue("http://www.nytimes.com/images" in payload["read"])
         self.assertFalse("thumbStandard.jpg" in payload["read"])
 
@@ -233,8 +231,6 @@ class IntentsTests(tornado.testing.AsyncHTTPTestCase):
         payload = tornado.escape.json_decode(response.body)
         self.assertEqual(payload["status"], 200)
         self.assertTrue(len(payload["read"]) > 0)
-        print(payload["read"])
-        self.assertTrue("http://www.nytimes.com/images" in payload["read"])
-        self.assertFalse("thumbStandard.jpg" in payload["read"])
+        
 
 
